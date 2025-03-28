@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tailwindcss -i ./public/input.css -o ./public/output.css --watch"
+    "dev": "npx @tailwindcss/cli -i ./public/input.css -o ./public/output.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.13",
-    "tailwindcss": "^4.0.13",
-    "concurrently": "^8.0.0"
+    "@tailwindcss/cli": "^4.0.17",
+    "tailwindcss": "^4.0.17"
   }
 }
