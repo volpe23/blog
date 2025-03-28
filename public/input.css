@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+	--font-montserrat: 'Montserrat', sans-serif;
+    --default-font-family: var(--font-montserrat);
+}
+
+.form-control {
+    @apply flex flex-col gap-1.5 my-4;
+}
+
+.form-input {
+    @apply border px-4 py-2 border-gray-500 rounded;
+}
+
+.form-submit {
+    @apply rounded px-4 py-2 bg-blue-500 text-white font-semibold transition-all;
+}
+.form-submit:hover {
+    @apply cursor-pointer brightness-95;
+}
+
+.form-error-message {
+    @apply text-red-500;
+}
+
+.input-error {
+    @apply border-red-500;
+}
