@@ -1,5 +1,5 @@
 {
-    "name": "lv-andrisr/blog_php",
+    "name": "andrisr/blog_php",
     "description": "blog",
     "autoload": {
         "psr-4": {
@@ -10,8 +10,7 @@
     },
     "authors": [
         {
-            "name": "volpe23",
-            "email": "arozmianecs@gmail.com"
+            "name": "volpe23"
         }
     ],
     "require": {}
