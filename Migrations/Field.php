@@ -28,9 +28,20 @@ abstract class Field
         return $this;
     }
 
+    public function default(string $val): static
+    {
+        $this->schemaText .= " DEFAULT {$val}";
+        return $this;
+    }
+
     public function getSchemaText(): string
     {
         return $this->fieldName . " " . $this->schemaText;
+    }
+
+    public function getFieldName(): string
+    {
+        return $this->fieldName;
     }
 
     public static $PRIMARY_KEY = " PRIMARY KEY";

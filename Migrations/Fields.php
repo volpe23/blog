@@ -28,14 +28,10 @@ class IntField extends Field
 class DateField extends Field
 {
     protected string $schemaText = "TEXT";
-    public static $CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP";
+    public static $CURRENT_TIMESTAMP = " CURRENT_TIMESTAMP";
     public function __construct(string $fieldName)
     {
         parent::__construct($fieldName);
     }
 
-    public function default(string $val): static {
-        $this->schemaText .= " DEFAULT {$val}";
-        return $this;
-    }
 }

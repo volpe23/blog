@@ -48,6 +48,15 @@ class Blueprint
         return $field->primaryKey();
     }
 
+    /** @var string[] */
+    public function cols()
+    {
+        return sort(array_reduce($this->fields, function ($arr, $curr) {
+            $arr[] = $curr->getFieldName();
+            return $arr;
+        }, []));
+    }
+
     public function createTableStr(): string
     {
         $str = "CREATE TABLE IF NOT EXISTS  {$this->tableName} (";
