@@ -48,13 +48,21 @@ class Blueprint
         return $field->primaryKey();
     }
 
+    public function datetime(string $fieldName): Field {
+        $field = new DateField($fieldName);
+        $this->fields[] = $field;
+        return $field;
+    }
+
     /** @var string[] */
     public function cols()
     {
-        return sort(array_reduce($this->fields, function ($arr, $curr) {
+        $arr = array_reduce($this->fields, function ($arr, $curr) {
             $arr[] = $curr->getFieldName();
             return $arr;
-        }, []));
+        }, []);
+        sort($arr);
+        return $arr;
     }
 
     public function createTableStr(): string

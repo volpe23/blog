@@ -25,8 +25,8 @@ class Database
 
     public function query(string $query, array $attrs = []): Database
     {
-        $this->statement = $this->conn->prepare($query, $attrs);
-        $this->statement->execute();
+        $this->statement = $this->conn->prepare($query);
+        if (!$this->statement->execute($attrs)) echo "Query failed";
 
         return $this;
     }
@@ -36,7 +36,8 @@ class Database
         return $this->statement->fetchAll();
     }
 
-    public function fetch(): mixed {
+    public function fetch(): mixed
+    {
         return $this->statement->fetch();
     }
 

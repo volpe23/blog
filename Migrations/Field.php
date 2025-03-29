@@ -6,6 +6,7 @@ abstract class Field
 {
     protected string $schemaText;
     protected string $fieldName;
+    protected string $def = "";
     public function __construct($fieldName)
     {
         $this->fieldName = $fieldName;
@@ -30,13 +31,14 @@ abstract class Field
 
     public function default(string $val): static
     {
-        $this->schemaText .= " DEFAULT {$val}";
+        // $this->schemaText .= " DEFAULT {$val}";
+        $this->def = " DEFAULT " . $val;
         return $this;
     }
 
     public function getSchemaText(): string
     {
-        return $this->fieldName . " " . $this->schemaText;
+        return trim($this->fieldName . " " . $this->schemaText . " " . $this->def);
     }
 
     public function getFieldName(): string
@@ -47,13 +49,4 @@ abstract class Field
     public static $PRIMARY_KEY = " PRIMARY KEY";
     public static $NOT_NULL = " NOT NULL";
     public static $UNIQUE = " UNIQUE";
-
-    // public static function nullable()
-    // foreach($options as $option => $value) {
-    // switch ($option) {
-    // case "nullable":
-    // $fieldString .= $value ? "" : "NOT NULL";
-    // break;
-    // }
-    // }
 }

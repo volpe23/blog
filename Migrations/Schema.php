@@ -2,8 +2,6 @@
 
 namespace Migrations;
 
-require "./Core/Database.php";
-
 use Core\Database;
 
 class Schema
@@ -16,19 +14,29 @@ class Schema
         $cb($table);
 
         $sqlite_master = static::tableExists($tableName);
+        $tableDetails = static::getTableDetails($tableName);
         $query = $table->createTableStr();
 
-        if ($sqlite_master) {
+        if (is_array($sqlite_master)) {
             if ($query === $sqlite_master["sql"]) return;
             if ($tableName !== $sqlite_master["name"]) {
                 static::changeTableName($tableName, $table);
                 return;
             };
-            $tableDetails = static::getTableDetails($tableName);
-            $currTableCols = sort(array_reduce($tableDetails, function ($arr, $curr) {
+            $currTableCols = array_reduce($tableDetails, function ($arr, $curr) {
                 $arr[] = $curr["name"];
                 return $arr;
-            }, []));
+            }, []);
+            sort($currTableCols);
+            var_dump($currTableCols, $table->cols());
+            $diff = array_diff($table->cols(), $currTableCols);
+
+            if (count($diff) > 0) {
+                $diffFields = array_filter($table->fields, fn($f) => in_array($f->getFieldName(), $diff));
+                foreach ($diffFields as $df) {
+                    static::addColumn($tableName, $df);
+                }
+            }
             if ($table->cols() == $currTableCols) {
             }
         } else {
@@ -41,13 +49,18 @@ class Schema
         static::$db->query("ALTER TABLE {$bp->tableName} TO {$newName}");
     }
 
-    private static function getTableDetails(string $tableName): array
+    private static function addColumn(string $tableName, Field $newCol)
     {
-        return static::$db->query("PRAGMA table_info{$tableName}")->fetchAll();
+        static::$db->query("ALTER TABLE {$tableName} ADD COLUMN {$newCol->getSchemaText()}");
     }
 
-    private static function tableExists(string $tableName): bool
+    private static function getTableDetails(string $tableName): array
     {
-        return static::$db->query("SELECT name FROM sqlite_master WHERE type='table' AND name=:table", ["table" => $tableName])->fetch();
+        return static::$db->query("PRAGMA table_info({$tableName})")->fetchAll();
+    }
+
+    private static function tableExists(string $tableName): bool | array
+    {
+        return static::$db->query("SELECT * FROM sqlite_master WHERE type=:type AND name=:table", ["table" => $tableName, "type" => "table"])->fetch();
     }
 }
