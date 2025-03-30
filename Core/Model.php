@@ -57,7 +57,6 @@ abstract class Model
         foreach ($attributes as $prop => $value) {
             $inst->$prop = $value;
         }
-        // $inst->save();
         return $inst;
     }
 }

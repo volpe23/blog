@@ -1,6 +1,6 @@
 <?php
 
-use Core\Models\User;
+use Core\Models\Users;
 
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -27,10 +27,11 @@ if ($method === "GET") {
         return;
     }
 
-    $user = User::create([
+    $user = Users::create([
         "username" => $username,
         "password" => password_hash($password, PASSWORD_BCRYPT)
     ]);
+    $user->save();
 
     dd($user);
 }
