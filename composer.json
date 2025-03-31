@@ -5,7 +5,8 @@
         "psr-4": {
             "Core\\": "Core/",
             "Core\\Models\\": "Core/Models",
-            "Migrations\\": "Migrations/"
+            "Migrations\\": "Migrations/",
+            "Controllers\\": "Http/controllers"
         }
     },
     "authors": [

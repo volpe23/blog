@@ -2,7 +2,6 @@
 // require base_path("routes.php");
 
 
-$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 
 function base_path(string $path): string
 {
@@ -29,4 +28,9 @@ function view(string $viewPath, $attributes = [])
     require base_path($viewPath);
 }
 
-route_to_controller($uri, $routes);
+function redirect(string $url, $attributes = []) {
+    extract($attributes);
+    header($url);
+}
+
+// route_to_controller($uri, $routes);

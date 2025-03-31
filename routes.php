@@ -1,5 +1,9 @@
 <?php
-$routes = [
+
+use Core\Route;
+use Controllers\UserController;
+
+$navRoutes = [
     "/" => [
         "name" => "Home",
         "controller" => "public/controllers/home.php"
@@ -21,3 +25,12 @@ $routes = [
         "controller" => "public/controllers/login.php"
     ]
 ];
+
+Route::get("/", function () {
+    return view("views/index.view.php");
+});
+Route::get("/user_register", function () {
+    require base_path("public/controllers/user_register.php");
+});
+Route::post("/user_register", [UserController::class, "register"]);
+
