@@ -23,4 +23,10 @@ function dd(mixed $value)
     die();
 }
 
+function view(string $viewPath, $attributes = [])
+{
+    extract($attributes);
+    require base_path($viewPath);
+}
+
 route_to_controller($uri, $routes);

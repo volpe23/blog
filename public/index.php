@@ -6,6 +6,7 @@ require BASE_PATH . "/views/partials/head.php";
 require BASE_PATH . "bootstrap.php";
 require BASE_PATH . "Core/functions.php";
 
+session_start();
 ?>
 
 
