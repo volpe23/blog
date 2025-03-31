@@ -33,5 +33,4 @@ if ($method === "GET") {
     ]);
     $user->save();
 
-    dd($user);
 }

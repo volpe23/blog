@@ -45,4 +45,9 @@ class Database
     {
         return $this->query($query, $attrs)->statement->rowCount() !== 0;
     }
+
+    public function lastId(?string $name = null): string|false
+    {
+        return $this->conn->lastInsertId($name);
+    }
 }

@@ -10,13 +10,19 @@ abstract class Model
     protected Database $db;
     public readonly string $table;
 
+    protected string $id;
     protected array $attributes;
-    protected array $timestamps = ["created_at", "updated_at"];
+    protected array $values;
+    protected array | bool $timestamps = ["created_at", "updated_at"];
+    protected array $fields;
 
     public function __construct()
     {
         $this->db = App::resolve(Database::class);
         $this->table = $this->getTableName(static::class);
+        if (is_array($this->timestamps)) {
+            $this->fields = [...$this->timestamps];
+        }
     }
 
     private function getTableName(string $class)
@@ -26,9 +32,9 @@ abstract class Model
         return strtolower($classExpl[$explLen - 1]);
     }
 
-    public function __set(string $prop, mixed $value)
+    public function __set(string $attr, $val)
     {
-        $this->attributes[$prop] = $value;
+        $this->attributes[$attr] = $val;
     }
     public function __get(string $prop): mixed
     {
@@ -45,17 +51,40 @@ abstract class Model
         return join(",", array_map(fn($val) => ":" . $val, array_keys($this->attributes)));
     }
 
+    private function searchByAttributes()
+    {
+        $attributeSearchString = [];
+        foreach ($this->attributes as $attr) {
+            $attributeSearchString[] = "{$attr}=:{$attr}";
+        }
+        $str = join(" AND ", $attributeSearchString);
+        $this->db->query("SELECT * FROM {$this->table} WHERE {$str}", array_combine($this->attributes, $this->values));
+    }
+
+    private function checkIfExists(): bool
+    {
+        return true;
+    }
+
+    private function setId($id) {
+        $this->id = $id;
+        $this->attributes["id"] = $id;
+    }
+
     public function save(): void
     {
-        $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES ({$this->getAttributesPlaceholders()})", $this->attributes);
+        $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES 
+        ({$this->getAttributesPlaceholders()})", $this->attributes);
+
+        $this->setId($this->db->lastId($this->table));
     }
 
     public static function create(array $attributes): static
     {
         $inst = new static();
-        $inst->attributes = $attributes;
-        foreach ($attributes as $prop => $value) {
-            $inst->$prop = $value;
+        $inst->values = array_values($attributes);
+        foreach ($attributes as $k => $v) {
+            $inst->$k = $v;
         }
         return $inst;
     }

@@ -6,5 +6,5 @@ use Core\Model;
 
 class Users extends Model
 {
-    protected array $attributes = ["username", "password"];
+    protected array $fields = ["username", "password"];
 }

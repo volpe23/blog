@@ -15,5 +15,9 @@ $routes = [
     "/user_register" => [
         "name" => "User Register",
         "controller" => "public/controllers/user_register.php"
+    ],
+    "/login" => [
+        "name" => "Login",
+        "controller" => "public/controllers/login.php"
     ]
 ];
