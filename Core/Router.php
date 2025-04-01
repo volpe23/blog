@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use ReflectionMethod;
+
 class Router
 {
 
@@ -26,14 +28,26 @@ class Router
         $this->add($uri, "POST", $cb);
     }
 
-    public function route($uri, $method) {
+    public function route($uri, $method)
+    {
         // var_dump($uri, $method);
         foreach ($this->routes as $route) {
             if ($route["uri"] === $uri && $route["method"] === $method) {
-                call_user_func($route["callback"]);
+                if (is_array($route["callback"])) {
+                    [$controller, $method] = $route["callback"];
+
+                    $reflection = new ReflectionMethod($controller, $method);
+                    $params = $reflection->getParameters();
+
+                    if (count($params) > 0) {
+                        call_user_func([$controller, $method], new Request($_GET, $_POST, $_SERVER));
+                    } else {
+                        call_user_func([$controller, $method]);
+                    }
+                } else {
+                    call_user_func($route["callback"]);
+                }
             }
         }
     }
 }
-
-

@@ -27,10 +27,11 @@ $navRoutes = [
 ];
 
 Route::get("/", function () {
-    return view("views/index.view.php");
+    return view("index");
 });
-Route::get("/user_register", function () {
-    require base_path("public/controllers/user_register.php");
+Route::get("/user_register", [UserController::class, "show"]);
+Route::post("/user_register", [UserController::class, "store"]);
+Route::get("/login", function () {
+    return view("login");
 });
-Route::post("/user_register", [UserController::class, "register"]);
 

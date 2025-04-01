@@ -3,11 +3,18 @@
 namespace Controllers;
 
 use Core\Models\Users;
+use Core\Request;
 
 class UserController
 {
+    public function login(Request $request) {}
+    public function show()
+    {
+        // var_dump($_SERVER["HTTP_HOST"]);
+        return view("user_register");
+    }
 
-    public function register()
+    public function store()
     {
 
         $flag = true;
@@ -26,8 +33,10 @@ class UserController
         }
 
         if (!$flag) {
-            require base_path("views/user_register.view.php");
-            return;
+            return view("user_register", [
+                "usernameError" => $usernameError,
+                "passwordError" => $passwordError
+            ]);
         }
 
         $user = Users::create([
@@ -35,10 +44,8 @@ class UserController
             "password" => password_hash($password, PASSWORD_BCRYPT)
         ]);
         $user->save();
-
-        return view("/user", [
-            "username_error" => $usernameError,
-            "password_error" => $passwordError
+        return redirect("login", [
+            "successMessage" => "Register successful"
         ]);
     }
 }

@@ -25,12 +25,12 @@ function dd(mixed $value)
 function view(string $viewPath, $attributes = [])
 {
     extract($attributes);
-    require base_path($viewPath);
+    require base_path("views/" . $viewPath . ".view.php");
 }
 
 function redirect(string $url, $attributes = []) {
     extract($attributes);
-    header($url);
+    header("Location: http://{$_SERVER['HTTP_HOST']}/" . $url);
 }
 
 // route_to_controller($uri, $routes);
