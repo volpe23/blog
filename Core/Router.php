@@ -3,6 +3,7 @@
 namespace Core;
 
 use ReflectionMethod;
+use Error;
 
 class Router
 {
@@ -39,7 +40,15 @@ class Router
                     $reflection = new ReflectionMethod($controller, $method);
                     $params = $reflection->getParameters();
 
+                    $dependencies = [];
                     if (count($params) > 0) {
+                        foreach ($params as $param) {
+                            $type = $param->getType();
+                            if (!$type || $type->isBuiltin()) {
+                                throw new Error("cannot resolve dependency");
+                            }
+                            $dependencies[] = App::make($type->getName());
+                        }
                         call_user_func([$controller, $method], new Request($_GET, $_POST, $_SERVER));
                     } else {
                         call_user_func([$controller, $method]);

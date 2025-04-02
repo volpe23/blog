@@ -34,14 +34,14 @@ class App
         };
     }
 
-    public static function make($key) {
+    public static function make($key)
+    {
 
         if (isset(static::$container[$key])) {
             return static::resolve($key);
         }
 
         return static::build($key);
-
     }
 
 
@@ -51,7 +51,21 @@ class App
 
         $reflector = new ReflectionClass($className);
         if (!$reflector->isInstantiable()) throw new Error("class is not instantiable");
+        $constructor = $reflector->getConstructor();
 
-        return $reflector->newInstance();
+        if (!$constructor) return $reflector->newInstance();
+        $params = $constructor->getParameters();
+        $dependencies = [];
+
+        foreach ($params as $param) {
+            $type = $param->getType();
+
+            if (!$type || $type->isBuiltin()) {
+                throw new Error("cannot resolve non-class dependency for $className");
+            }
+            $dependencies[] = static::make($type->getName());
+        }
+
+        return $reflector->newInstanceArgs($dependencies);
     }
 }
