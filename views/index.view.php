@@ -1,4 +1,4 @@
-    <?php if ($successMessage): ?>
+    <?php if (isset($successMessage) && !empty($successMessage)): ?>
         <div class="absolute top-1/3 left-1/2 -translate-x-1/2">
             <span><?= $successMessage ?></span>
         </div>

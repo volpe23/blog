@@ -2,7 +2,8 @@
 
 namespace Core;
 
-class Request {
+class Request
+{
     private array $query;
     private array $body;
     private array $server;
@@ -10,6 +11,11 @@ class Request {
     {
         $this->query = $query;
         $this->body = $body;
-        $this->server = $server; 
+        $this->server = $server;
+    }
+
+    public function __get(string $param): string | null
+    {
+        return $this->body[$param] ?? null;
     }
 }

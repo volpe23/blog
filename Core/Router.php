@@ -49,14 +49,19 @@ class Router
                             }
                             $dependencies[] = App::make($type->getName());
                         }
-                        call_user_func([$controller, $method], new Request($_GET, $_POST, $_SERVER));
+                        call_user_func([$controller, $method], ...$dependencies);
                     } else {
                         call_user_func([$controller, $method]);
                     }
                 } else {
                     call_user_func($route["callback"]);
                 }
+                return;
             }
         }
+        view("404", [
+            "uri" => $uri,
+            "statusCode" => 404
+        ]);
     }
 }

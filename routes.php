@@ -34,4 +34,5 @@ Route::post("/user_register", [UserController::class, "store"]);
 Route::get("/login", function () {
     return view("login");
 });
+Route::post("/login", [UserController::class, "login"]);
 

@@ -4,10 +4,20 @@ namespace Controllers;
 
 use Core\Models\Users;
 use Core\Request;
+use Core\Auth;
 
 class UserController
 {
-    public function login(Request $request) {}
+    public function login(Request $request)
+    {
+        $username = $request->username;
+        $password = $request->password;
+
+        Auth::attempt([
+            "username" => $username,
+            "password" => $password
+        ]);
+    }
     public function show()
     {
         // var_dump($_SERVER["HTTP_HOST"]);

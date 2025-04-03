@@ -88,4 +88,13 @@ abstract class Model
         }
         return $inst;
     }
+
+    public static function get(array $attributes): static | null {
+        $inst = new static();
+
+        $res = $inst->db->query("SELECT * FROM {$inst->table} WHERE {$inst->db->paramsFromAttrs($attributes)}", $attributes)->fetch();
+        var_dump($res);
+
+        return $inst;
+    }
 }

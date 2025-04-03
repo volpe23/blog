@@ -25,6 +25,7 @@ class Database
 
     public function query(string $query, array $attrs = []): Database
     {
+        var_dump($query, $attrs);
         $this->statement = $this->conn->prepare($query);
         if (!$this->statement->execute($attrs)) echo "Query failed";
 
@@ -49,5 +50,10 @@ class Database
     public function lastId(?string $name = null): string|false
     {
         return $this->conn->lastInsertId($name);
+    }
+
+    public function paramsFromAttrs(array $attributes): string
+    {
+        return join(" AND ", array_map(fn(string $k): string => "$k=:$k", array_keys($attributes)));
     }
 }

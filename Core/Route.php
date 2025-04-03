@@ -10,7 +10,7 @@ class Route
     private static $router;
     private static array $allowedMethods = ["GET", "POST"];
 
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, $arguments)
     {
         $method = strtoupper($name);
         if (!is_string($arguments[0])) throw new Error("provided URI is not a string");
