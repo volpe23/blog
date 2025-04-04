@@ -20,7 +20,8 @@ $navRoutes = [
     "/login" => [
         "name" => "Login",
         "restriction" => !Auth::check()
-    ]
+    ],
+    
 ];
 
 Route::get("/", function () {
@@ -32,3 +33,4 @@ Route::get("/login", function () {
     return view("login");
 });
 Route::post("/login", [UserController::class, "login"]);
+Route::post("/logout", [UserController::class, "logout"]);

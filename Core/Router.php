@@ -2,65 +2,43 @@
 
 namespace Core;
 
-use ReflectionMethod;
-use Error;
 
 class Router
 {
 
-    private array $routes = [];
+    /**
+     * @var array<string, array<string, Route>>
+     */
+    private array $routes = [
+        "GET" => [],
+        "POST" => []
+    ];
 
-    private function add(string $uri, string $method, callable $cb)
+    private function add(string $uri, string $method, Route $route)
     {
-        $this->routes[] = [
-            "uri" => $uri,
-            "method" => $method,
-            "callback" => $cb
-        ];
+        $this->routes[$method][$uri] = $route;
     }
 
-    public function get(string $uri, callable $cb)
+    public function get(string $uri, Route $route)
     {
-        $this->add($uri, "GET", $cb);
+        $this->add($uri, "GET", $route);
     }
 
-    public function post(string $uri, callable $cb)
+    public function post(string $uri, Route $route)
     {
-        $this->add($uri, "POST", $cb);
+        $this->add($uri, "POST", $route);
     }
 
     public function route($uri, $method)
     {
-        foreach ($this->routes as $route) {
-            if ($route["uri"] === $uri && $route["method"] === $method) {
-                if (is_array($route["callback"])) {
-                    [$controller, $method] = $route["callback"];
-
-                    $reflection = new ReflectionMethod($controller, $method);
-                    $params = $reflection->getParameters();
-
-                    $dependencies = [];
-                    if (count($params) > 0) {
-                        foreach ($params as $param) {
-                            $type = $param->getType();
-                            if (!$type || $type->isBuiltin()) {
-                                throw new Error("cannot resolve dependency");
-                            }
-                            $dependencies[] = App::make($type->getName());
-                        }
-                        call_user_func([$controller, $method], ...$dependencies);
-                    } else {
-                        call_user_func([$controller, $method]);
-                    }
-                } else {
-                    call_user_func($route["callback"]);
-                }
-                return;
-            }
+        if (isset($this->routes[$method][$uri])) {
+            $route = $this->routes[$method][$uri];
+            $route->dispatch();
+        } else {
+            view("404", [
+                "uri" => $uri,
+                "statusCode" => 404
+            ]);
         }
-        view("404", [
-            "uri" => $uri,
-            "statusCode" => 404
-        ]);
     }
 }

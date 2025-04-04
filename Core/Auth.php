@@ -51,6 +51,10 @@ class Auth
         session_regenerate_id(true);
     }
 
+    public static function logout() {
+        Session::destroy();
+    }
+
     public static function init(Database $db, string $tableName): void
     {
         self::$usersModel = $tableName;

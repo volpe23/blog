@@ -3,12 +3,23 @@
 namespace Core;
 
 use Error;
+use ReflectionMethod;
 
 class Route
 {
 
-    private static $router;
     private static array $allowedMethods = ["GET", "POST"];
+    /**
+     * @var array{callback: callable, middleware: array}
+     */
+    private array $options;
+    public function __construct(private $cb)
+    {
+        $this->options = [
+            "callback" => $cb,
+            "middleware" => []
+        ];
+    }
 
     public static function __callStatic(string $name, $arguments)
     {
@@ -22,14 +33,54 @@ class Route
 
             if (!is_callable($cb)) throw new Error("provided callback is not callable");
         }
+        $inst = new static($cb);
 
-        self::$router->$name($uri, $cb);
+        App::resolve(Router::class)->$name($uri, $inst);
+        return $inst;
     }
 
-    public static function setRouter($router)
+    public function dispatch()
     {
-        self::$router = $router;
+        if (!empty($this->options["middleware"])) {
+            foreach($this->options["middleware"] as $mw) {
+                Middleware::$mw();
+            }   
+        }
+        if (is_array($this->options["callback"])) {
+            [$controller, $method] = $this->options["callback"];
+
+            $reflection = new ReflectionMethod($controller, $method);
+            $params = $reflection->getParameters();
+
+            $dependencies = [];
+            if (count($params) > 0) {
+                foreach ($params as $param) {
+                    $type = $param->getType();
+                    if (!$type || $type->isBuiltin()) {
+                        throw new Error("cannot resolve dependency");
+                    }
+                    $dependencies[] = App::make($type->getName());
+                }
+                call_user_func([$controller, $method], ...$dependencies);
+            } else {
+                call_user_func([$controller, $method]);
+            }
+        } else {
+            call_user_func($this->options["callback"]);
+        }
+    }
+
+    public function middleware($cb)
+    {
+
+        if (!is_callable($cb)) {
+            if (is_array($cb) && isset($cb[0], $cb[1])) {
+                App::make($cb[0]);
+
+                if (!is_callable($cb)) throw new Error("could not resolve middleware");
+            } else throw new Error("huh?");
+        }
+
+        $this->options["middleware"][] = $cb;
     }
 }
-
-Route::setRouter(App::make(Router::class));

@@ -12,7 +12,7 @@
 <body>
     <header class="w-full mx-auto">
         <nav class="py-6 border-gray-300 border-b shadow">
-            <div class="flex justify-between container mx-auto">
+            <div class="flex justify-between items-center container mx-auto">
                 <ul class="flex gap-6">
                     <?php
 
@@ -29,7 +29,12 @@
                     } ?>
                 </ul>
                 <?php if (Auth::check()): ?>
-                    <span><?= Auth::$user->username ?></span>
+                    <div class="flex gap-6 items-center">
+                        <span><?= Auth::$user->username ?></span>
+                        <form action="/logout" method="POST">
+                            <input class="py-2 rounded font-medium text-red-900 hover:text-red-700 hover:underline hover:cursor-pointer" type="submit" value="Logout">
+                        </form>
+                    </div>
                 <?php endif; ?>
             </div>
         </nav>

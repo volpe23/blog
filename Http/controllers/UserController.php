@@ -61,4 +61,10 @@ class UserController
             "successMessage" => "Register successful"
         ]);
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        redirect("login");
+    }
 }
