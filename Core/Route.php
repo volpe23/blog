@@ -43,7 +43,7 @@ class Route
     {
         if (!empty($this->options["middleware"])) {
             foreach($this->options["middleware"] as $mw) {
-                Middleware::$mw();
+                Middleware::resolve($mw);
             }   
         }
         if (is_array($this->options["callback"])) {
@@ -70,17 +70,9 @@ class Route
         }
     }
 
-    public function middleware($cb)
+    public function middleware($mwKey)
     {
 
-        if (!is_callable($cb)) {
-            if (is_array($cb) && isset($cb[0], $cb[1])) {
-                App::make($cb[0]);
-
-                if (!is_callable($cb)) throw new Error("could not resolve middleware");
-            } else throw new Error("huh?");
-        }
-
-        $this->options["middleware"][] = $cb;
+        $this->options["middleware"][] = $mwKey;
     }
 }

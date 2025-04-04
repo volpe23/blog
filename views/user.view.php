@@ -1,0 +1,1 @@
+<div class="text-red-500 font-bold">This is only accessible to authenticated users</div>

@@ -2,6 +2,7 @@
 
 use Core\Route;
 use Core\Auth;
+use Core\Middleware;
 use Controllers\UserController;
 
 $navRoutes = [
@@ -26,7 +27,7 @@ $navRoutes = [
 
 Route::get("/", function () {
     return view("index");
-});
+})->middleware("auth");
 Route::get("/user_register", [UserController::class, "show"]);
 Route::post("/user_register", [UserController::class, "store"]);
 Route::get("/login", function () {
@@ -34,3 +35,4 @@ Route::get("/login", function () {
 });
 Route::post("/login", [UserController::class, "login"]);
 Route::post("/logout", [UserController::class, "logout"]);
+Route::get("/user", fn() => view("user"))->middleware("auth");
