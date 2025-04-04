@@ -28,7 +28,6 @@ class Schema
                 return $arr;
             }, []);
             sort($currTableCols);
-            var_dump($currTableCols, $table->cols());
             $diff = array_diff($table->cols(), $currTableCols);
 
             if (count($diff) > 0) {

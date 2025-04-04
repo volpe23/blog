@@ -28,9 +28,11 @@ function view(string $viewPath, $attributes = [])
     require base_path("views/" . $viewPath . ".view.php");
 }
 
-function redirect(string $url, $attributes = []) {
+function redirect(string $url, $attributes = [])
+{
     extract($attributes);
-    header("Location: http://{$_SERVER['HTTP_HOST']}/" . $url);
+    header("Location: $url");
+    exit();
 }
 
 // route_to_controller($uri, $routes);

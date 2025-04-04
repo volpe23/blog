@@ -8,14 +8,15 @@ use Core\Model;
 class Auth
 {
     /**
-     * @param class-string<Model> $usersTable
+     * @param class-string<Model> $usersModel
      */
-    private static string $usersTable;
+    private static string $usersModel;
+    public static ?Model $user;
     private static Database $db;
     // Create a class that stores info about current user
-    public static function check(string $username, string $password): bool
+    public static function check(): bool
     {
-        return false;
+        return (bool) self::$user;
     }
 
     /**
@@ -26,14 +27,39 @@ class Auth
         if (!isset($credentials["username"], $credentials["password"])) {
             return false;
         }
-        self::$usersTable::get($credentials);
+        $user = self::$usersModel::get([
+            "username" => $credentials["username"]
+        ]);
 
-        return true;
+        if ($user) {
+            if (password_verify($credentials["password"], $user->password)) {
+                self::$user = $user;
+                self::login($user);
+                return true;
+            };
+            echo "not ok usert";
+        }
+
+        return false;
+    }
+
+    public static function login($user)
+    {
+        Session::set("user", [
+            "username" => $user->username
+        ]);
+        session_regenerate_id(true);
     }
 
     public static function init(Database $db, string $tableName): void
     {
-        self::$usersTable = $tableName;
+        self::$usersModel = $tableName;
+        self::$user = null;
+        if (Session::check("user")) {
+            self::$user = self::$usersModel::get([
+                "username" => Session::get("user")["username"]
+            ]);
+        }
         self::$db = $db;
     }
 }

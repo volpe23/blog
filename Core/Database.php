@@ -25,7 +25,6 @@ class Database
 
     public function query(string $query, array $attrs = []): Database
     {
-        var_dump($query, $attrs);
         $this->statement = $this->conn->prepare($query);
         if (!$this->statement->execute($attrs)) echo "Query failed";
 

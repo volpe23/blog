@@ -7,7 +7,7 @@ class Request
     private array $query;
     private array $body;
     private array $server;
-    public function __construct(array $query, array $body, array $server)
+    public function __construct(array $query, array $body, array $server, private array $session)
     {
         $this->query = $query;
         $this->body = $body;
@@ -18,4 +18,5 @@ class Request
     {
         return $this->body[$param] ?? null;
     }
+
 }

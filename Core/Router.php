@@ -31,7 +31,6 @@ class Router
 
     public function route($uri, $method)
     {
-        // var_dump($uri, $method);
         foreach ($this->routes as $route) {
             if ($route["uri"] === $uri && $route["method"] === $method) {
                 if (is_array($route["callback"])) {

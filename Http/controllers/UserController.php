@@ -17,6 +17,9 @@ class UserController
             "username" => $username,
             "password" => $password
         ]);
+
+        // return redirect("/");
+        return view("/login");
     }
     public function show()
     {

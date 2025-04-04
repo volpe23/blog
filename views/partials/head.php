@@ -11,11 +11,24 @@
 
 <body>
     <header class="w-full mx-auto">
-        <nav class=" py-6 border-gray-300 border-b shadow">
-            <div class="container mx-auto">
-                <?php foreach ($navRoutes as $route => $options): ?>
-                    <a class="px-4 py-2 rounded font-medium text-red-900 <?= parse_url($_SERVER["REQUEST_URI"])["path"] === $route ? "underline" : "" ?> hover:text-red-700 hover:underline" href="<?= $route ?>"><?= $options["name"] ?></a>
-                <?php endforeach ?>
+        <nav class="py-6 border-gray-300 border-b shadow">
+            <div class="flex justify-between container mx-auto">
+                <ul class="flex gap-6">
+                    <?php
+
+                    use Core\Auth;
+
+                    foreach ($navRoutes as $route => $options): ?>
+                        <li><a class="py-2 rounded font-medium text-red-900 
+                    <?= parse_url($_SERVER["REQUEST_URI"])["path"] === $route ? "underline" : "" ?> 
+                    hover:text-red-700 hover:underline" href="<?= $route ?>">
+                                <?= $options["name"] ?>
+                            </a></li>
+                    <?php endforeach ?>
+                </ul>
+                <?php if (Auth::check()): ?>
+                    <span><?= Auth::$user->username ?></span>
+                <?php endif; ?>
             </div>
         </nav>
     </header>

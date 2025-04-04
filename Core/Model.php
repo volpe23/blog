@@ -66,7 +66,8 @@ abstract class Model
         return true;
     }
 
-    private function setId($id) {
+    private function setId($id)
+    {
         $this->id = $id;
         $this->attributes["id"] = $id;
     }
@@ -89,11 +90,14 @@ abstract class Model
         return $inst;
     }
 
-    public static function get(array $attributes): static | null {
+    public static function get(array $attributes): static | null
+    {
         $inst = new static();
 
         $res = $inst->db->query("SELECT * FROM {$inst->table} WHERE {$inst->db->paramsFromAttrs($attributes)}", $attributes)->fetch();
-        var_dump($res);
+        if ((bool) $res) {
+            $inst->attributes = $res;
+        }
 
         return $inst;
     }
