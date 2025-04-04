@@ -28,11 +28,11 @@ $navRoutes = [
 Route::get("/", function () {
     return view("index");
 })->middleware("auth");
-Route::get("/user_register", [UserController::class, "show"]);
-Route::post("/user_register", [UserController::class, "store"]);
+Route::get("/user_register", [UserController::class, "show"])->middleware("guest");
+Route::post("/user_register", [UserController::class, "store"])->middleware("guest");
 Route::get("/login", function () {
     return view("login");
-});
-Route::post("/login", [UserController::class, "login"]);
+})->middleware("guest");
+Route::post("/login", [UserController::class, "login"])->middleware("guest");
 Route::post("/logout", [UserController::class, "logout"]);
 Route::get("/user", fn() => view("user"))->middleware("auth");

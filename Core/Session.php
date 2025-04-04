@@ -14,6 +14,10 @@ class Session
         $_SESSION[$key] = $value;
     }
 
+    public static function flash(string $key,string $value) {
+        $_SESSION["_flash"][$key] = $value;
+    }
+
     public static function destroy()
     {
         $_SESSION = [];

@@ -72,7 +72,7 @@ class Route
 
     public function middleware($mwKey)
     {
-
         $this->options["middleware"][] = $mwKey;
+        return $this;
     }
 }

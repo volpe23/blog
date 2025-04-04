@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Validator;
+
 class Request
 {
     private array $query;
@@ -19,4 +21,19 @@ class Request
         return $this->body[$param] ?? null;
     }
 
+    public function validate(array $validations): bool
+    {
+        foreach ($validations as $attr => $validation) {
+            $splitValidation = explode("|", $validation);
+            foreach ($splitValidation as $singleValidation) {
+                if (str_contains($singleValidation, ":")) {
+                    [$singleValidation, $value] = explode(":", $singleValidation);
+                    if (!Validator::$singleValidation($this->body[$attr], $value)) return false;
+                } else {
+                    if (!Validator::$singleValidation($this->body[$attr])) return false;
+                }
+            }
+        }
+        return true;
+    }
 }

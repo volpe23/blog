@@ -3,12 +3,13 @@
 namespace Core;
 
 use Core\Middleware\Authenticated;
+use Core\Middleware\Guest;
 use Exception;
 
 class Middleware {
     public const MAP = [
         "auth" => Authenticated::class,
-        "guest"
+        "guest" => Guest::class
     ];
     public static function resolve($key) {
         if (!$key) return;

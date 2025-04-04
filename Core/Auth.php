@@ -37,7 +37,6 @@ class Auth
                 self::login($user);
                 return true;
             };
-            echo "not ok usert";
         }
 
         return false;
@@ -51,7 +50,8 @@ class Auth
         session_regenerate_id(true);
     }
 
-    public static function logout() {
+    public static function logout()
+    {
         Session::destroy();
     }
 

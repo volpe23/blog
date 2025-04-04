@@ -13,10 +13,15 @@ class UserController
         $username = $request->username;
         $password = $request->password;
 
-        Auth::attempt([
+        if (!Auth::attempt([
             "username" => $username,
             "password" => $password
-        ]);
+        ])) {
+            return view("/login", [
+                "usernameError" => "Username not correct",
+                "passwordError" => "Password not correct"
+            ]);
+        }
 
         return redirect("/");
         // return view("/login");
@@ -27,7 +32,7 @@ class UserController
         return view("user_register");
     }
 
-    public function store()
+    public function store(Request $request)
     {
 
         $flag = true;
