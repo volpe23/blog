@@ -6,7 +6,7 @@ class Session
 {
 
     public static function check($key): bool {
-        return (bool) $_SESSION[$key];
+        return isset($_SESSION[$key]);
     }
     public static function set($key, $value)
     {

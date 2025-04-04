@@ -18,13 +18,15 @@
 
                     use Core\Auth;
 
-                    foreach ($navRoutes as $route => $options): ?>
-                        <li><a class="py-2 rounded font-medium text-red-900 
-                    <?= parse_url($_SERVER["REQUEST_URI"])["path"] === $route ? "underline" : "" ?> 
-                    hover:text-red-700 hover:underline" href="<?= $route ?>">
-                                <?= $options["name"] ?>
-                            </a></li>
-                    <?php endforeach ?>
+                    foreach ($navRoutes as $route => $options) {
+                        if ($options["restriction"]): ?>
+                            <li><a class="py-2 rounded font-medium text-red-900 
+                            <?= parse_url($_SERVER["REQUEST_URI"])["path"] === $route ? "underline" : "" ?> 
+                            hover:text-red-700 hover:underline" href="<?= $route ?>">
+                                    <?= $options["name"] ?>
+                                </a></li>
+                    <?php endif;
+                    } ?>
                 </ul>
                 <?php if (Auth::check()): ?>
                     <span><?= Auth::$user->username ?></span>

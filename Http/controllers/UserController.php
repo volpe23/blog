@@ -18,8 +18,8 @@ class UserController
             "password" => $password
         ]);
 
-        // return redirect("/");
-        return view("/login");
+        return redirect("/");
+        // return view("/login");
     }
     public function show()
     {

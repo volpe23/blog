@@ -1,28 +1,25 @@
 <?php
 
 use Core\Route;
+use Core\Auth;
 use Controllers\UserController;
 
 $navRoutes = [
     "/" => [
         "name" => "Home",
-        "controller" => "public/controllers/home.php"
-    ],
-    "/hello" => [
-        "name" => "Hello",
-        "controller" => "public/controllers/hello.php"
+        "restriction" => Auth::check()
     ],
     "/user" => [
         "name" => "User",
-        "controller" => "public/controllers/user.php"
+        "restriction" => Auth::check()
     ],
     "/user_register" => [
         "name" => "User Register",
-        "controller" => "public/controllers/user_register.php"
+        "restriction" => !Auth::check()
     ],
     "/login" => [
         "name" => "Login",
-        "controller" => "public/controllers/login.php"
+        "restriction" => !Auth::check()
     ]
 ];
 
@@ -35,4 +32,3 @@ Route::get("/login", function () {
     return view("login");
 });
 Route::post("/login", [UserController::class, "login"]);
-
