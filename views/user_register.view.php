@@ -3,7 +3,11 @@
         <div class="form-control">
             <label for="username">Username</label>
             <input name="username" id="username" class="form-input <?= isset($usernameError) && !empty($usernameError) ? "input-error" : "" ?>" placeholder="Username">
-            <?php if (isset($usernameError)): ?>
+            <?php
+
+            use Core\Session;
+
+            if (isset($usernameError)): ?>
                 <span class="form-error-message"><?= $usernameError ?></span>
             <?php endif; ?>
         </div>
@@ -18,4 +22,9 @@
             <input id="submit" type="submit" class="form-submit" value="Register">
         </div>
     </form>
+    <?php if (Session::errors()): ?>
+        <?php foreach (Session::errors() as $error): ?>
+            <p class="text-red-500"><?= $error ?></p>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>

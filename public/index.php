@@ -2,6 +2,7 @@
 
 use Core\App;
 use Core\Router;
+use Core\Session;
 
 const BASE_PATH = __DIR__ . "/../";
 
@@ -18,6 +19,7 @@ $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 $method = $_SERVER["REQUEST_METHOD"];
 
 App::resolve(Router::class)->route($uri, $method);
+Session::unflash();
 
 
 require __DIR__ . "/../views/partials/foot.php";
