@@ -7,6 +7,9 @@ use Core\Middleware\Guest;
 use Exception;
 
 class Middleware {
+    /**
+     * @var array<string, MiddlewareInterface> MAP
+     */
     public const MAP = [
         "auth" => Authenticated::class,
         "guest" => Guest::class
