@@ -4,6 +4,7 @@ namespace Core;
 
 use Core\Database;
 use Core\Model;
+use Core\Models\Users;
 
 class Auth
 {
@@ -12,11 +13,10 @@ class Auth
      */
     private static string $usersModel;
     public static ?Model $user;
-    private static Database $db;
     // Create a class that stores info about current user
     public static function check(): bool
     {
-        return (bool) self::$user;
+        return Session::check("user");
     }
 
     /**
@@ -55,15 +55,18 @@ class Auth
         Session::destroy();
     }
 
-    public static function init(Database $db, string $tableName): void
+    public static function user(): ?Users
     {
-        self::$usersModel = $tableName;
-        self::$user = null;
-        if (Session::check("user")) {
-            self::$user = self::$usersModel::get([
-                "username" => Session::get("user")["username"]
-            ]);
-        }
-        self::$db = $db;
+        // var_dump(self::$usersModel::get([
+            // "username" => Session::get("user")
+        // ]));
+        $res = Session::check("user") ? self::$usersModel::get([
+            "username" => Session::get("user")["username"]
+        ]) : null;
+        return $res;
+    }
+
+    public static function init($usersModel) {
+        static::$usersModel = $usersModel;
     }
 }

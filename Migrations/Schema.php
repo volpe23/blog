@@ -8,7 +8,6 @@ class Schema
 {
     public static Database $db;
     public static function create(string $tableName, callable $cb)
-
     {
         $table = new Blueprint($tableName);
         $cb($table);

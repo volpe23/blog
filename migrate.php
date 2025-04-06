@@ -15,3 +15,11 @@ Schema::create("users", function (Blueprint $table) {
     $table->datetime("created_at");
     $table->datetime("updated_at");
 });
+
+Schema::create("post", function (Blueprint $table) {
+    $table->id();
+    $table->string("title")->nullable(false);
+    $table->string("text")->nullable(false);
+    $table->int("user_id")->nullable(false);
+    $table->foreign("user_id")->references("users", "id");
+});

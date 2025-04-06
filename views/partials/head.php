@@ -30,7 +30,7 @@
                 </ul>
                 <?php if (Auth::check()): ?>
                     <div class="flex gap-6 items-center">
-                        <span><?= Auth::$user->username ?></span>
+                        <span><?= Auth::user()?->username ?></span>
                         <form action="/logout" method="POST">
                             <input class="py-2 rounded font-medium text-red-900 hover:text-red-700 hover:underline hover:cursor-pointer" type="submit" value="Logout">
                         </form>

@@ -48,6 +48,12 @@ class Blueprint
         return $field->primaryKey();
     }
 
+    public function foreign(string $fieldName) {
+        $field = new ForeignKeyField($fieldName);
+        $this->fields[] = $field;
+        return $field;
+    }
+
     public function datetime(string $fieldName): Field {
         $field = new DateField($fieldName);
         $this->fields[] = $field;

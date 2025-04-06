@@ -32,5 +32,25 @@ class DateField extends Field
         parent::__construct($fieldName);
         $this->default(self::CURRENT_TIMESTAMP);
     }
+}
 
+class ForeignKeyField extends Field
+{
+    protected string $schemaText = "FOREIGN KEY";
+    public function __construct(string $fkFieldName)
+    {
+        $this->schemaText .= " ($fkFieldName)";
+    }
+
+    public function references($referencedTable, string $row = ""): static
+    {
+        $this->schemaText .= " REFERENCES $referencedTable";
+        $this->schemaText .= !empty($row) ? " ($row)" : "";
+        return $this;
+    }
+
+    public function getSchemaText(): string
+    {
+        return $this->schemaText;
+    }
 }

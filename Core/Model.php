@@ -61,11 +61,6 @@ abstract class Model
         $this->db->query("SELECT * FROM {$this->table} WHERE {$str}", array_combine($this->attributes, $this->values));
     }
 
-    private function checkIfExists(): bool
-    {
-        return true;
-    }
-
     private function setId($id)
     {
         $this->id = $id;
@@ -101,4 +96,6 @@ abstract class Model
 
         return $inst;
     }
+
+    
 }

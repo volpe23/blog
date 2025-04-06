@@ -29,7 +29,7 @@ class Route
         [$uri, $cb] = $arguments;
 
         if (is_array($cb) && !is_callable($cb) && isset($cb[0], $cb[1])) {
-            $cb[0] = App::make($cb[0]);
+            $cb[0] = App::resolve($cb[0]);
 
             if (!is_callable($cb)) throw new Error("provided callback is not callable");
         }
@@ -59,7 +59,7 @@ class Route
                     if (!$type || $type->isBuiltin()) {
                         throw new Error("cannot resolve dependency");
                     }
-                    $dependencies[] = App::make($type->getName());
+                    $dependencies[] = App::resolve($type->getName());
                 }
                 call_user_func([$controller, $method], ...$dependencies);
             } else {
