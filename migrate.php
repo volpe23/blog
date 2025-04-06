@@ -3,6 +3,7 @@
 require "./vendor/autoload.php";
 
 use Core\Database;
+use Migrations\Actions;
 use Migrations\Blueprint;
 use Migrations\Schema;
 
@@ -21,5 +22,7 @@ Schema::create("post", function (Blueprint $table) {
     $table->string("title")->nullable(false);
     $table->string("text")->nullable(false);
     $table->int("user_id")->nullable(false);
-    $table->foreign("user_id")->references("users", "id");
+    $table->datetime("created_at");
+    $table->datetime("updated_at");
+    $table->foreign("user_id")->references("users", "id")->onDelete(Actions::Cascade);
 });

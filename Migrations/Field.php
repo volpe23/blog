@@ -32,7 +32,7 @@ abstract class Field
     public function default(string $val): static
     {
         // $this->schemaText .= " DEFAULT {$val}";
-        $this->def = " DEFAULT " . $val;
+        $this->def = "DEFAULT " . $val;
         return $this;
     }
 
