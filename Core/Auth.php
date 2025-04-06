@@ -58,15 +58,14 @@ class Auth
     public static function user(): ?Users
     {
         // var_dump(self::$usersModel::get([
-            // "username" => Session::get("user")
+        // "username" => Session::get("user")
         // ]));
-        $res = Session::check("user") ? self::$usersModel::get([
-            "username" => Session::get("user")["username"]
-        ]) : null;
+        $res = Session::check("user") ? self::$usersModel::where("username", Session::get("user")["username"])->get() : null;
         return $res;
     }
 
-    public static function init($usersModel) {
+    public static function init($usersModel)
+    {
         static::$usersModel = $usersModel;
     }
 }

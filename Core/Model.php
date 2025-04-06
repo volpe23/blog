@@ -4,32 +4,30 @@ namespace Core;
 
 use Core\App;
 use Core\Database;
+use Exception;
 
 abstract class Model
 {
     protected Database $db;
     public readonly string $table;
 
-    protected string $id;
+    protected string $primaryKey = "id";
     protected array $attributes;
     protected array $values;
     protected array | bool $timestamps = ["created_at", "updated_at"];
     protected array $fields;
+    protected QueryBuilder $qb;
 
     public function __construct()
     {
         $this->db = App::resolve(Database::class);
-        $this->table = $this->getTableName(static::class);
+
+        $this->table = $this->table ?? $this->getTableName();
+        $this->qb = new QueryBuilder($this->table);
+
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
         }
-    }
-
-    private function getTableName(string $class)
-    {
-        $classExpl = explode("\\", $class);
-        $explLen = count($classExpl);
-        return strtolower($classExpl[$explLen - 1]);
     }
 
     public function __set(string $attr, $val)
@@ -39,6 +37,20 @@ abstract class Model
     public function __get(string $prop): mixed
     {
         return $this->attributes[$prop] ?? null;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (in_array($name, $this->qb->methods)) throw new Exception("$name query method does not exist");
+        $this->qb->$name(...$arguments);
+        return $this;
+    }
+
+    private static function getTableName()
+    {
+        $classExpl = explode("\\", static::class);
+        $explLen = count($classExpl);
+        return strtolower($classExpl[$explLen - 1]);
     }
 
     private function getAttributesString(): string
@@ -51,23 +63,22 @@ abstract class Model
         return join(",", array_map(fn($val) => ":" . $val, array_keys($this->attributes)));
     }
 
-    private function searchByAttributes()
-    {
-        $attributeSearchString = [];
-        foreach ($this->attributes as $attr) {
-            $attributeSearchString[] = "{$attr}=:{$attr}";
-        }
-        $str = join(" AND ", $attributeSearchString);
-        $this->db->query("SELECT * FROM {$this->table} WHERE {$str}", array_combine($this->attributes, $this->values));
-    }
 
     private function setId($id)
     {
-        $this->id = $id;
+        $this->primaryKey = $id;
         $this->attributes["id"] = $id;
     }
 
     public function save(): void
+    {
+        $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES 
+        ({$this->getAttributesPlaceholders()})", $this->attributes);
+
+        $this->setId($this->db->lastId($this->table));
+    }
+
+    public function createEntry(): void
     {
         $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES 
         ({$this->getAttributesPlaceholders()})", $this->attributes);
@@ -82,20 +93,37 @@ abstract class Model
         foreach ($attributes as $k => $v) {
             $inst->$k = $v;
         }
+        $inst->createEntry();
         return $inst;
     }
 
-    public static function get(array $attributes): static | null
+    public static function all(): array
     {
-        $inst = new static();
-
-        $res = $inst->db->query("SELECT * FROM {$inst->table} WHERE {$inst->db->paramsFromAttrs($attributes)}", $attributes)->fetch();
-        if ((bool) $res) {
-            $inst->attributes = $res;
-        }
-
-        return $inst;
+        return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass();
     }
 
-    
+    public static function where(string | array $col, mixed $value, string $comp = "="): static
+    {
+        $instance = new static();
+        $instance->qb->select()->where($col, $value, $comp);
+
+        return $instance;
+    }
+
+    public function get(): static
+    {
+        return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchClass(static::class);
+    }
+
+    // public static function get(array $attributes): static | null
+    // {
+    // $inst = new static();
+
+    // $res = $inst->db->query("SELECT * FROM {$inst->table} WHERE {$inst->db->paramsFromAttrs($attributes)}", $attributes)->fetch();
+    // if ((bool) $res) {
+    // $inst->attributes = $res;
+    // }
+
+    // return $inst;
+    // }
 }

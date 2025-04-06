@@ -3,6 +3,8 @@
 namespace Core;
 
 use ErrorException;
+use ReflectionClass;
+use ReflectionMethod;
 
 enum OrderingDirection: string
 {
@@ -14,8 +16,13 @@ class QueryBuilder
 {
     private string $query;
     private array $binds = [];
+    public array $methods;
 
-    public function __construct(private string $table) {}
+    public function __construct(private string $table)
+    {
+        $reflection = new ReflectionClass(static::class);
+        $this->methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+    }
 
     public function select(array $cols = ["*"]): static
     {
@@ -77,6 +84,10 @@ class QueryBuilder
     public function getQuery(): string
     {
         return $this->query;
+    }
+
+    public function getBinds(): array {
+        return $this->binds;
     }
 
     public static function table(string $tableName): static

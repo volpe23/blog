@@ -36,9 +36,19 @@ class Database
         return $this->statement->fetchAll();
     }
 
+    public function fetchAllClass(?string $class, ?array $constructorArgs): array
+    {
+        return $this->statement->fetchAll(PDO::FETCH_CLASS, $class, $constructorArgs);
+    }
+
     public function fetch(): mixed
     {
         return $this->statement->fetch();
+    }
+
+    public function fetchClass(?string $class, ?array $constructorArgs = []): object | false
+    {
+        return $this->statement->fetchObject($class, $constructorArgs);
     }
 
     public function check(string $query, array $attrs = []): bool
