@@ -14,5 +14,7 @@
             "name": "volpe23"
         }
     ],
-    "require": {}
+    "require": {
+        "psr/container": "^2.0"
+    }
 }
