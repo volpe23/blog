@@ -13,9 +13,9 @@ abstract class Model
 
     protected string $primaryKey = "id";
     protected array $attributes;
-    protected array $values;
     protected array | bool $timestamps = ["created_at", "updated_at"];
     protected array $fields;
+    // TODO: implement hidden fields
     protected QueryBuilder $qb;
 
     public function __construct()
@@ -44,6 +44,11 @@ abstract class Model
         if (in_array($name, $this->qb->methods)) throw new Exception("$name query method does not exist");
         $this->qb->$name(...$arguments);
         return $this;
+    }
+
+    public function id()
+    {
+        return $this->attributes[$this->primaryKey];
     }
 
     private static function getTableName()
@@ -89,17 +94,14 @@ abstract class Model
     public static function create(array $attributes): static
     {
         $inst = new static();
-        $inst->values = array_values($attributes);
-        foreach ($attributes as $k => $v) {
-            $inst->$k = $v;
-        }
+        $inst->attributes = $attributes;
         $inst->createEntry();
         return $inst;
     }
 
     public static function all(): array
     {
-        return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass();
+        return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass(static::class);
     }
 
     public static function where(string | array $col, mixed $value = NULL, string $comp = "="): static
@@ -110,20 +112,26 @@ abstract class Model
         return $instance;
     }
 
-    public function get(): static
+    /**
+     * @return static[]
+     */
+    public function get(): array
+    {
+        return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchAllClass(static::class);
+    }
+
+    public function first(): static
     {
         return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchClass(static::class);
     }
 
-    // public static function get(array $attributes): static | null
-    // {
-    // $inst = new static();
+    public function belongsTo(string $class)
+    {
+        // TODO: establishes relation
+    }
 
-    // $res = $inst->db->query("SELECT * FROM {$inst->table} WHERE {$inst->db->paramsFromAttrs($attributes)}", $attributes)->fetch();
-    // if ((bool) $res) {
-    // $inst->attributes = $res;
-    // }
-
-    // return $inst;
-    // }
+    public static function with()
+    {
+        // TODO: implement function that gets the related model
+    }
 }

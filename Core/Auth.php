@@ -33,7 +33,7 @@ class Auth
                 "=",
                 $credentials["username"]
             ]
-        ])->get();
+        ])->first();
 
         if ($user) {
             if (password_verify($credentials["password"], $user->password)) {
@@ -61,10 +61,7 @@ class Auth
 
     public static function user(): ?Users
     {
-        // var_dump(self::$usersModel::get([
-        // "username" => Session::get("user")
-        // ]));
-        $res = Session::check("user") ? self::$usersModel::where("username", Session::get("user")["username"])->get() : null;
+        $res = Session::check("user") ? self::$usersModel::where("username", Session::get("user")["username"])->first() : null;
         return $res;
     }
 

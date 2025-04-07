@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\PostsController;
 use Core\Route;
 use Core\Auth;
 use Core\Middleware;
@@ -10,9 +11,9 @@ $navRoutes = [
         "name" => "Home",
         "restriction" => Auth::check()
     ],
-    "/user" => [
-        "name" => "User",
-        "restriction" => Auth::check()
+    "/posts" => [
+        "name" => "Posts",
+        "restriction" => true
     ],
     "/user_register" => [
         "name" => "User Register",
@@ -22,7 +23,7 @@ $navRoutes = [
         "name" => "Login",
         "restriction" => !Auth::check()
     ],
-    
+
 ];
 
 Route::get("/", function () {
@@ -36,3 +37,8 @@ Route::get("/login", function () {
 Route::post("/login", [UserController::class, "login"])->middleware("guest");
 Route::post("/logout", [UserController::class, "logout"]);
 Route::get("/user", fn() => view("user"))->middleware("auth");
+
+// Routes for posts
+Route::get("/posts", [PostsController::class, "index"]);
+// Route::get("/posts_create", [PostsController::class, "create"])->middleware("auth");
+Route::post("/posts_create", [PostsController::class, "store"])->middleware("auth");

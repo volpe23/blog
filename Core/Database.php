@@ -36,7 +36,7 @@ class Database
         return $this->statement->fetchAll();
     }
 
-    public function fetchAllClass(?string $class, ?array $constructorArgs): array
+    public function fetchAllClass(?string $class, ?array $constructorArgs = null): array
     {
         return $this->statement->fetchAll(PDO::FETCH_CLASS, $class, $constructorArgs);
     }

@@ -6,6 +6,6 @@ use Core\Model;
 
 class Users extends Model
 {
-    public string $identifier = "username";
+    public static $identifier = "username";
     protected array $fields = ["username", "password"];
 }
