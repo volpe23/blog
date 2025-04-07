@@ -24,7 +24,6 @@ class UserController
         }
 
         return redirect("/");
-        // return view("/login");
     }
     public function show()
     {
@@ -44,7 +43,6 @@ class UserController
             "username" => $validated["username"],
             "password" => password_hash($validated["password"], PASSWORD_BCRYPT)
         ]);
-        $user->save();
         return redirect("login", [
             "successMessage" => "Register successful"
         ]);

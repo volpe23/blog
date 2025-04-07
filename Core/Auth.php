@@ -27,9 +27,13 @@ class Auth
         if (!isset($credentials["username"], $credentials["password"])) {
             return false;
         }
-        $user = self::$usersModel::get([
-            "username" => $credentials["username"]
-        ]);
+        $user = self::$usersModel::where([
+            [
+                "username",
+                "=",
+                $credentials["username"]
+            ]
+        ])->get();
 
         if ($user) {
             if (password_verify($credentials["password"], $user->password)) {

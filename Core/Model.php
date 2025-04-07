@@ -102,7 +102,7 @@ abstract class Model
         return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass();
     }
 
-    public static function where(string | array $col, mixed $value, string $comp = "="): static
+    public static function where(string | array $col, mixed $value = NULL, string $comp = "="): static
     {
         $instance = new static();
         $instance->qb->select()->where($col, $value, $comp);

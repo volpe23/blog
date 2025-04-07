@@ -9,6 +9,7 @@ class Route
 {
 
     private static array $allowedMethods = ["GET", "POST"];
+    private static array $csrfMethods = ["POST", "PUT", "DELETE", "UPDATE"];
     /**
      * @var array{callback: callable, middleware: array}
      */
@@ -39,12 +40,18 @@ class Route
         return $inst;
     }
 
-    public function dispatch()
+    public function dispatch(string $requestMethod)
     {
+        $config = App::resolve(Config::class);
+        if ($config->csrf && !Hash::getCsrfToken()) Hash::generateCsrf();
+
+        if (in_array($requestMethod, static::$csrfMethods) && $config->csrf) {
+            $this->middleware("csrf");
+        }
         if (!empty($this->options["middleware"])) {
-            foreach($this->options["middleware"] as $mw) {
+            foreach ($this->options["middleware"] as $mw) {
                 Middleware::resolve($mw);
-            }   
+            }
         }
         if (is_array($this->options["callback"])) {
             [$controller, $method] = $this->options["callback"];

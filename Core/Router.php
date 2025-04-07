@@ -33,7 +33,7 @@ class Router
     {
         if (isset($this->routes[$method][$uri])) {
             $route = $this->routes[$method][$uri];
-            $route->dispatch();
+            $route->dispatch($method);
         } else {
             view("404", [
                 "uri" => $uri,

@@ -1,5 +1,10 @@
+<?php
+
+use Core\Middleware\Csrf;
+?>
 <div id="user_register_form" class="container">
     <form method="POST" action="/user_register" class="border border-gray-500 p-8 max-w-96 my-6 mx-auto rounded">
+        <?= Csrf::csrfInputField() ?>
         <div class="form-control">
             <label for="username">Username</label>
             <input name="username" id="username" class="form-input <?= isset($usernameError) && !empty($usernameError) ? "input-error" : "" ?>" placeholder="Username">

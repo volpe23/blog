@@ -45,8 +45,9 @@ class QueryBuilder
     {
         $this->query .= str_contains($this->query, "WHERE") ? " AND " : " WHERE ";
         if (is_array($col)) {
-            if (count($col) !== 3) throw new ErrorException("wrong number of arguments provided in where() array");
+            // if (count($col) !== 3) throw new ErrorException("wrong number of arguments provided in where() array");
             $conditions = array_map(function ($cnd) {
+                if (count($cnd) !== 3) throw new ErrorException("wrong number of arguments provided in where() array");
                 [$c, $comp, $value] = $cnd;
                 $this->binds[$c] = $value;
                 return "$c" . $comp . ":$c";
@@ -86,7 +87,8 @@ class QueryBuilder
         return $this->query;
     }
 
-    public function getBinds(): array {
+    public function getBinds(): array
+    {
         return $this->binds;
     }
 
