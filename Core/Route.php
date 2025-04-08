@@ -5,11 +5,18 @@ namespace Core;
 use Error;
 use ReflectionMethod;
 
+/**
+ * @method static \Core\Route get(string $uri, array|callable $action)
+ * @method static \Core\Route post(string $uri, array|callable $action)
+ * 
+ * @see \Core\Router
+ */
 class Route
 {
 
     private static array $allowedMethods = ["GET", "POST"];
     private static array $csrfMethods = ["POST", "PUT", "DELETE", "UPDATE"];
+    private bool $csrf = false;
     /**
      * @var array{callback: callable, middleware: array}
      */
@@ -45,7 +52,7 @@ class Route
         $config = App::resolve(Config::class);
         if ($config->csrf && !Hash::getCsrfToken()) Hash::generateCsrf();
 
-        if (in_array($requestMethod, static::$csrfMethods) && $config->csrf) {
+        if (in_array($requestMethod, static::$csrfMethods) && $config->csrf && !$this->csrf) {
             $this->middleware("csrf");
         }
         if (!empty($this->options["middleware"])) {
@@ -68,18 +75,33 @@ class Route
                     }
                     $dependencies[] = App::resolve($type->getName());
                 }
-                call_user_func([$controller, $method], ...$dependencies);
-            } else {
-                call_user_func([$controller, $method]);
             }
+            call_user_func([$controller, $method], $dependencies);
         } else {
             call_user_func($this->options["callback"]);
         }
     }
 
+    /**
+     * @param string $mwKey
+     * 
+     * @return $this
+     */
     public function middleware($mwKey)
     {
         $this->options["middleware"][] = $mwKey;
+        return $this;
+    }
+
+    /**
+     * Sets the route csrf status
+     * @param bool $flag
+     * 
+     * @return $this
+     */
+    public function csrfExempt(bool $flag = true)
+    {
+        $this->csrf = $flag;
         return $this;
     }
 }

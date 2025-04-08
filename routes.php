@@ -35,7 +35,7 @@ Route::get("/login", function () {
     return view("login");
 })->middleware("guest");
 Route::post("/login", [UserController::class, "login"])->middleware("guest");
-Route::post("/logout", [UserController::class, "logout"]);
+Route::post("/logout", [UserController::class, "logout"])->csrfExempt(true);
 Route::get("/user", fn() => view("user"))->middleware("auth");
 
 // Routes for posts

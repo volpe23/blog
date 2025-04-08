@@ -29,6 +29,12 @@ class Router
         $this->add($uri, "POST", $route);
     }
 
+    /**
+     * @param string $uri
+     * @param string $method
+     * 
+     * @return void
+     */
     public function route($uri, $method)
     {
         if (isset($this->routes[$method][$uri])) {
