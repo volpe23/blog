@@ -2,28 +2,36 @@
 
 namespace Core;
 
-class App
+use Reflection;
+use ReflectionClass;
+
+class App extends Container
 {
 
-    private static Container $container;
+    public function __construct(protected array $config) {}
 
-    public static function bind($key, $resolver): void
+    /**
+     * Returns the config settings
+     * 
+     * @return array $config
+     */
+    public function getConfig()
     {
-        static::$container->set($key, $resolver);
+        return $this->config;
     }
 
-    public static function resolve(string $key)
+    /**
+     * @param class-string<ServiceProvider>[] $providers
+     */
+    public function register($providers)
     {
-        return static::$container->get($key);
-    }
+        foreach ($providers as $provider) {
+            $reflector = new ReflectionClass($provider);
 
-    public static function singleton($key, $resolver)
-    {
-        static::$container->singleton($key, $resolver);
-    }
+            $instance = $reflector->newInstance();
+            $this->providers[] = $instance;
 
-    public static function init(Container $container)
-    {
-        static::$container = $container;
+            $instance->register();
+        }
     }
 }

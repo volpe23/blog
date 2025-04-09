@@ -15,14 +15,30 @@ class Container implements ContainerInterface
     /**
      * @var array<string, callable> $entries
      */
-    private $entries = [];
+    protected $entries = [];
 
+    /**
+     * @var ServiceProvider[] $providers
+     */
+    protected $providers = [];
+
+    /**
+     * @var array<string, object> $instances
+     */
+    protected $instances = [];
+
+    /**
+     * Checks wether the binding exists
+     * 
+     * @param string $id
+     * @return bool
+     */
     public function has(string $id): bool
     {
         return isset($this->entries[$id]);
     }
 
-    public function set(string $id, callable $resolver): void
+    public function bind(string $id, callable $resolver): void
     {
         $this->entries[$id] = $resolver;
     }
@@ -36,6 +52,10 @@ class Container implements ContainerInterface
         }
 
         return $this->resolve($id);
+    }
+
+    public function make(string $key) {
+        return $this->entries[$key]();
     }
 
     public function singleton(string $id, callable $resolver): void {

@@ -4,6 +4,7 @@
 @theme {
 	--font-montserrat: 'Montserrat', sans-serif;
     --default-font-family: var(--font-montserrat);
+    --breakpoint-2xl: 80rem;
 }
 
 .form-control {
