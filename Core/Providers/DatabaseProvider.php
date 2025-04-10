@@ -14,7 +14,7 @@ class DatabaseProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton("db", fn() => new Database($this->app->get("config")["database"], $this->app));
+        $this->app->singleton("db", fn() => new Database($this->app->getConfigValue("database"), $this->app));
     }
 
     /**

@@ -43,6 +43,9 @@ class Container implements ContainerInterface
         $this->entries[$id] = $resolver;
     }
 
+    /**
+     * @return object
+     */
     public function get(string $id)
     {
         if ($this->has($id)) {
@@ -69,6 +72,9 @@ class Container implements ContainerInterface
         };
     }
 
+    /**
+     * @return object
+     */
     public function resolve(string $id)
     {
 
