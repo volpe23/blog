@@ -116,7 +116,7 @@ class Container implements ContainerInterface, ArrayAccess
      * @return mixed
      */
     public function offsetGet($offset): mixed {
-        return $this->entries[$offset]();
+        return call_user_func($this->entries[$offset]);
     }
 
     /**

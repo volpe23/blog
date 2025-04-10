@@ -51,8 +51,8 @@ class Route
     public function dispatch()
     {
         $this->executeMiddlewares();
+        $this->resolveAction();
 
-        dd($this->resolvedAction);
         call_user_func($this->resolvedAction);
     }
 
@@ -68,9 +68,9 @@ class Route
     protected function resolveControlerAction()
     {
         if (count($this->action) !== 2) throw new Exception("Incorrect controller action provided");
-        // [$controllerString, $method] = $this->action;
+        [$controllerString, $method] = $this->action;
 
-        $methodReflection = new ReflectionMethod($this->action);
+        $methodReflection = new ReflectionMethod($controllerString, $method);
         $params = $methodReflection->getParameters();
 
         $dependencies = [];
@@ -85,8 +85,12 @@ class Route
             }
         }
 
-        return function () use ($dependencies) {
-            return call_user_func($this->action, $dependencies);
+        $instance = $this->resolveFromContainer($controllerString);
+
+        $callable = [$instance, $method];
+
+        return function () use ($callable, $dependencies) {
+            call_user_func($callable, $dependencies);
         };
     }
 

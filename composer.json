@@ -5,6 +5,10 @@
         "psr-4": {
             "Core\\": "Core/",
             "Core\\Models\\": "Core/Models",
+            "Core\\Routing\\": "Core/Routing",
+            "Core\\Providers\\": "Core/Providers",
+            "Core\\Facades\\": "Core/Facades",
+            "Core\\Middleware\\": "Core/Middleware",
             "Migrations\\": "Migrations/",
             "Controllers\\": "Http/controllers"
         }
