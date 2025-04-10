@@ -1,9 +1,8 @@
 <?php
 
 use Controllers\PostsController;
-use Core\Route;
+use Core\Facades\Route;
 use Core\Auth;
-use Core\Middleware;
 use Controllers\UserController;
 
 $navRoutes = [

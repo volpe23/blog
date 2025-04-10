@@ -25,19 +25,43 @@ class Router
         $this->container = $container;
     }
 
+    /**
+     * Add new route to the router
+     * @param string $uri
+     * @param string $method
+     * @param callable|arary $action
+     * 
+     * @return Route
+     */
     private function add(string $uri, string $method, $action)
     {
-        $this->routes[$method][$uri] = $this->newRoute($action, $method);
+        return $this->routes[$method][$uri] = $this->newRoute($action, $method);
     }
 
+    /**
+     * Registers a GET route in the application
+     * 
+     * @param string $uri
+     * @param callable|array $action
+     * 
+     * @return Route
+     */
     public function get(string $uri, $action)
     {
-        $this->add($uri, "GET", $action);
+        return $this->add($uri, "GET", $action);
     }
 
+    /**
+     * Registers a POST route in the application
+     * 
+     * @param string $uri
+     * @param callable|array $action
+     * 
+     * @return Route
+     */
     public function post(string $uri, $action)
     {
-        $this->add($uri, "POST", $action);
+        return $this->add($uri, "POST", $action);
     }
 
     /**
@@ -48,17 +72,9 @@ class Router
      */
     private function newRoute($action, $method)
     {
-        return new Route($action, $method, $this);
-    }
-
-    /**
-     * Get the main app container
-     * 
-     * @return \Core\Container
-     */
-    public function getContainer()
-    {
-        return $this->container;
+        return (new Route($action, $method))
+            ->setRouter($this)
+            ->setContainer($this->container);
     }
 
     /**

@@ -2,10 +2,11 @@
 
 namespace Core;
 
+use ArrayAccess;
 use Reflection;
 use ReflectionClass;
 
-class App extends Container
+class App extends Container implements ArrayAccess
 {
     public function __construct(protected array $config) {}
 
@@ -46,4 +47,5 @@ class App extends Container
 
         return $this;
     }
+
 }

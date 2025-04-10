@@ -18,7 +18,7 @@ require BASE_PATH . "/views/partials/head.php";
 $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 $method = $_SERVER["REQUEST_METHOD"];
 
-App::resolve(Router::class)->route($uri, $method);
+$app->get("router")->route($uri, $method);
 Session::unflash();
 
 

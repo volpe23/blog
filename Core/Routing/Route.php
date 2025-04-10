@@ -28,20 +28,35 @@ class Route
     protected $resolvedAction;
 
     /**
+     * Application router instance
+     * 
+     * @var Router $router
+     */
+    protected $router;
+
+    /**
+     * Application Container instance
+     * 
+     * @var Container $container
+     */
+    protected $container;
+
+    /**
      * @param array|callable $action
      * @param string $method
      * @param Router $router
      */
-    public function __construct(protected $action, protected $method, protected Router $router) {}
+    public function __construct(protected $action, protected $method) {}
 
-    public function dispatch(string $requestMethod)
+    public function dispatch()
     {
         $this->executeMiddlewares();
 
+        dd($this->resolvedAction);
         call_user_func($this->resolvedAction);
     }
 
-    protected function resolveAction()
+    public function resolveAction()
     {
         if (is_callable($this->action)) $this->resolvedAction = $this->action;
         else if (is_array($this->action)) $this->resolvedAction = $this->resolveControlerAction();
@@ -80,7 +95,7 @@ class Route
      */
     protected function resolveFromContainer(string $key)
     {
-        return $this->router->getContainer()->get($key);
+        return $this->container->get($key);
     }
 
     /**
@@ -122,6 +137,26 @@ class Route
         foreach ($this->middlewares as $middleware) {
             call_user_func($middleware);
         }
+    }
+
+    public function setRouter(Router $router): static
+    {
+        $this->router = $router;
+
+        return $this;
+    }
+
+    /**
+     * Sets the application container to the route
+     * @var Container $container
+     * 
+     * @return self
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+
+        return $this;
     }
 
     /**

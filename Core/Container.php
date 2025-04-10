@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use ArrayAccess;
 use Core\Exceptions\ContainerException;
 use Core\Exceptions\NotFoundException;
 use Psr\Container\ContainerInterface;
@@ -9,7 +10,7 @@ use ReflectionClass;
 use ReflectionParameter;
 use ReflectionUnionType;
 
-class Container implements ContainerInterface
+class Container implements ContainerInterface, ArrayAccess
 {
 
     /**
@@ -103,4 +104,36 @@ class Container implements ContainerInterface
 
         return $reflection->newInstanceArgs($dependencies);
     }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->entries); 
+    }
+
+    /**
+     * @param string $offset
+     * 
+     * @return mixed
+     */
+    public function offsetGet($offset): mixed {
+        return $this->entries[$offset]();
+    }
+
+    /**
+     * @param string $offset
+     * @param mixed $value
+     * 
+     * @return void
+     */
+    public function offsetSet($offset, $value): void {
+        $this->entries[$offset] = $value;
+    }
+
+    /**
+     * @param string $offset
+     */
+    public function offsetUnset($offset): void {
+        unset($this->entries[$offset]);
+    }
+
 }
