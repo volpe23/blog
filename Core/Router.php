@@ -7,12 +7,21 @@ class Router
 {
 
     /**
+     * @var \Core\Container
+     */
+    protected $container;
+    /**
      * @var array<string, array<string, Route>>
      */
     private array $routes = [
         "GET" => [],
         "POST" => []
     ];
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container; 
+    }
 
     private function add(string $uri, string $method, Route $route)
     {

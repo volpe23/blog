@@ -9,12 +9,19 @@ class Database
 {
     private PDO $conn;
     private PDOStatement $statement;
+    
+    /**
+     * App container
+     * @var \Core\Container
+     */
+    protected $container;
 
-    public function __construct(private string $file)
+    public function __construct(private string $file, Container $container)
     {
         $this->conn = new PDO("sqlite:{$file}", null, null, [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
+        $this->container = $container;
     }
 
     public function insert(string $query, array $attrs): bool

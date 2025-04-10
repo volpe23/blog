@@ -18,7 +18,9 @@ function route_to_controller(string $uri, array $routes): void
 
 function dd(mixed $value)
 {
-    echo "<pre>" . var_dump($value) . "</pre>";
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
     die();
 }
 

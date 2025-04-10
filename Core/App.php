@@ -22,16 +22,20 @@ class App extends Container
 
     /**
      * @param class-string<ServiceProvider>[] $providers
+     * 
+     * @return static
      */
     public function register($providers)
     {
         foreach ($providers as $provider) {
             $reflector = new ReflectionClass($provider);
 
-            $instance = $reflector->newInstance();
+            $instance = $reflector->newInstance($this);
             $this->providers[] = $instance;
 
             $instance->register();
         }
+
+        return $this;
     }
 }

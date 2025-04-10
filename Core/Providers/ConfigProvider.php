@@ -9,6 +9,6 @@ class ConfigProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind("config", fn() => new Config($this->app->getConfig()));
+        $this->app->singleton("config", fn() => new Config($this->app->getConfig()));
     }
 }
