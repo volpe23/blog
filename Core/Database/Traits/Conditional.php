@@ -53,7 +53,7 @@ trait Conditional
     protected function buildWheres(): string
     {
         if (empty($this->wheres)) return "";
-        return implode(" AND ", array_map(fn($where) => $this->buildSingleWhere($where), $this->wheres));
+        return "WHERE" . implode(" AND ", array_map(fn($where) => $this->buildSingleWhere($where), $this->wheres));
     }
 
     /**

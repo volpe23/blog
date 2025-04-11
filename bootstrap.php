@@ -2,7 +2,6 @@
 
 use Core\App;
 use Core\Facades\Facade;
-use Core\Middleware;
 use Core\Providers\ConfigProvider;
 use Core\Providers\DatabaseProvider;
 use Core\Providers\MiddlewareProvider;
