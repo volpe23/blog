@@ -3,7 +3,7 @@
 namespace Core;
 
 use Core\App;
-use Core\Database\Database;
+use Core\Facades\Database;
 use Core\Database\Support\QueryBuilder;
 use Exception;
 
@@ -21,7 +21,7 @@ abstract class Model
 
     public function __construct()
     {
-        $this->db = App::resolve(Database::class);
+        $this->db = Database::getInstance();
 
         $this->table = $this->table ?? $this->getTableName();
         $this->qb = new QueryBuilder($this->table);

@@ -2,9 +2,9 @@
 
 namespace Core\Database\Support;
 
-use ErrorException;
 use ReflectionClass;
 use ReflectionMethod;
+use Core\Database\Database;
 
 
 
@@ -14,7 +14,7 @@ abstract class QueryBuilder
     protected array $binds = [];
     public array $methods;
 
-    public function __construct(private string $table)
+    public function __construct(private string $table, private Database $connection)
     {
         $reflection = new ReflectionClass(static::class);
         $this->methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
@@ -39,10 +39,5 @@ abstract class QueryBuilder
     public function getBinds(): array
     {
         return $this->binds;
-    }
-
-    public static function table(string $tableName): static
-    {
-        return new static($tableName);
     }
 }

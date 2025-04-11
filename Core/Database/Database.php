@@ -5,12 +5,13 @@ namespace Core\Database;
 use PDO;
 use PDOStatement;
 use Core\Container;
+use Core\Database\Support\QueryBuilder;
 
 class Database
 {
     private PDO $conn;
     private PDOStatement $statement;
-    
+
     /**
      * App container
      * @var \Core\Container
@@ -72,5 +73,14 @@ class Database
     public function paramsFromAttrs(array $attributes): string
     {
         return join(" AND ", array_map(fn(string $k): string => "$k=:$k", array_keys($attributes)));
+    }
+
+    public function getInstance(): self
+    {
+        return $this;
+    }
+
+    public function newQueryBuilder(): QueryBuilder {
+        // return new
     }
 }
