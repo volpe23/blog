@@ -2,7 +2,7 @@
 
 namespace Migrations;
 
-use Core\Database;
+use Core\Database\Database;
 
 class Schema
 {

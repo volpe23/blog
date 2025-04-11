@@ -32,6 +32,13 @@ class Database
         return $this->statement->execute();
     }
 
+    /**
+     * Queries the database with sql statement and attributes
+     * @param string $query
+     * @param array $attrs
+     * 
+     * @return self
+     */
     public function query(string $query, array $attrs = []): Database
     {
         $this->statement = $this->conn->prepare($query);
@@ -40,6 +47,9 @@ class Database
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function fetchAll(): array
     {
         return $this->statement->fetchAll();
@@ -50,6 +60,9 @@ class Database
         return $this->statement->fetchAll(PDO::FETCH_CLASS, $class, $constructorArgs);
     }
 
+    /**
+     * @return array|bool
+     */
     public function fetch(): mixed
     {
         return $this->statement->fetch();
@@ -60,11 +73,24 @@ class Database
         return $this->statement->fetchObject($class, $constructorArgs);
     }
 
+    /**
+     * Checks wether exists in the table
+     * @param string $query
+     * @param array $attrs
+     * 
+     * @return bool
+     */
     public function check(string $query, array $attrs = []): bool
     {
         return $this->query($query, $attrs)->statement->rowCount() !== 0;
     }
 
+    /**
+     * Returns last inserted id in the database
+     * @param ?string $name
+     * 
+     * @return string|false
+     */
     public function lastId(?string $name = null): string|false
     {
         return $this->conn->lastInsertId($name);
@@ -80,7 +106,14 @@ class Database
         return $this;
     }
 
-    public function newQueryBuilder(): QueryBuilder {
-        // return new
+    /**
+     * Returns new query builder
+     * @param string $table
+     * 
+     * @return QueryBuilder
+     */
+    public function newQueryBuilder(string $table): QueryBuilder
+    {
+        return new QueryBuilder($table, $this);
     }
 }
