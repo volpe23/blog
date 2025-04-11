@@ -30,7 +30,7 @@ class QueryBuilder
      */
     protected array $wheres = [];
 
-    protected bool $distinct = false;
+    public bool $distinct = false;
     public array $methods;
 
     protected $sqlBuilder;
@@ -70,10 +70,10 @@ class QueryBuilder
         return $this;
     }
 
-    protected function addWhere(string $column, string $operator, string $value)
+    protected function addWhere(string $column, string $operator, string $value, string $boolean = "and")
     {
         $this->binds["where"][] = $value;
-        $this->wheres[] = [$column, $operator, $value];
+        $this->wheres[] = compact($column, $operator, $value, $boolean);
     }
 
     /**
@@ -85,6 +85,13 @@ class QueryBuilder
     {
         $this->distinct = $bool;
         return $this;
+    }
+
+    public function get()
+    {
+        $sql = $this->sqlBuilder->createSelectQuery($this);
+
+        $this->connection->query($sql)->fetchAll();
     }
 
     /**
