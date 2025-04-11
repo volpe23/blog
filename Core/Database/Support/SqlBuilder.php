@@ -52,7 +52,7 @@ class SqlBuilder
     protected function compileWhere(array $where): string
     {
 
-        return $where["boolean"] . " " . $where["column"] . " " . $where["operator"] . " " . $where["value"];
+        return $where["boolean"] . " " . $where["column"] . " " . $where["operator"] . " ?";
     }
 
     public function createInsertQuery(QueryBuilder $builder, array $values): string

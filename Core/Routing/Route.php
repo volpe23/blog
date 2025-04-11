@@ -3,7 +3,6 @@
 namespace Core\Routing;
 
 use Exception;
-use Error;
 use ReflectionMethod;
 
 class Route
@@ -90,7 +89,7 @@ class Route
         $callable = [$instance, $method];
 
         return function () use ($callable, $dependencies) {
-            call_user_func($callable, $dependencies);
+            call_user_func_array($callable, $dependencies);
         };
     }
 

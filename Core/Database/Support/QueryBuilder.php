@@ -91,7 +91,7 @@ class QueryBuilder
     {
         $sql = $this->sqlBuilder->createSelectQuery($this);
 
-        $this->connection->query($sql)->fetchAll();
+        $this->connection->query($sql, $this->getFlatBindings())->fetchAll();
     }
 
     /**
@@ -102,9 +102,14 @@ class QueryBuilder
      */
     public function insert(array $values): bool
     {
-        $sql = $this->sqlBuilder->createInsertQuery($values);
+        $sql = $this->sqlBuilder->createInsertQuery($this, $values);
 
         return $this->connection->insert($sql, $values);
+    }
+
+    protected function getFlatBindings(): array
+    {
+        return array_reduce($this->binds, fn($res, $curr) => array_merge($res, $curr));
     }
 
     public function getQuery(): string

@@ -3,7 +3,8 @@
 namespace Core;
 
 use Core\App;
-use Core\Facades\Database;
+use Core\Facades\Database as DB;
+use Core\Database\Database;
 use Core\Database\Support\QueryBuilder;
 use Exception;
 
@@ -21,10 +22,10 @@ abstract class Model
 
     public function __construct()
     {
-        $this->db = Database::getInstance();
+        $this->db = DB::getInstance();
 
         $this->table = $this->table ?? $this->getTableName();
-        $this->qb = new QueryBuilder($this->table);
+        $this->qb = new QueryBuilder($this->table, $this->db);
 
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
@@ -84,25 +85,24 @@ abstract class Model
         $this->setId($this->db->lastId($this->table));
     }
 
-    public function createEntry(): void
+    public function createEntry(array $values): void
     {
-        $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES 
-        ({$this->getAttributesPlaceholders()})", $this->attributes);
-
-        $this->setId($this->db->lastId($this->table));
+        // Implement model db creation
+        $this->qb->insert($values);
     }
 
     public static function create(array $attributes): static
     {
         $inst = new static();
         $inst->attributes = $attributes;
-        $inst->createEntry();
+        $inst->createEntry($attributes);
         return $inst;
     }
 
     public static function all(): array
     {
-        return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass(static::class);
+        // return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass(static::class);
+        return [];
     }
 
     public static function where(string | array $col, mixed $value = NULL, string $comp = "="): static

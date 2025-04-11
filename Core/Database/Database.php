@@ -28,8 +28,8 @@ class Database
 
     public function insert(string $query, array $attrs): bool
     {
-        $this->statement = $this->conn->prepare($query, $attrs);
-        return $this->statement->execute();
+        $this->statement = $this->conn->prepare($query);
+        return $this->statement->execute($attrs);
     }
 
     /**
@@ -41,6 +41,7 @@ class Database
      */
     public function query(string $query, array $attrs = []): Database
     {
+        dd($query);
         $this->statement = $this->conn->prepare($query);
         if (!$this->statement->execute($attrs)) echo "Query failed";
 

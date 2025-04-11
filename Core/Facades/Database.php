@@ -9,6 +9,6 @@ class Database extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return "database";
+        return "db";
     }
 }
