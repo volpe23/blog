@@ -2,10 +2,10 @@
 
 namespace Core;
 
-use Core\Database;
 use Core\Model;
 use Core\Models\Users;
 
+// TODO: refactor auth to be storec in the container
 class Auth
 {
     /**

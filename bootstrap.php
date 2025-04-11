@@ -2,6 +2,7 @@
 
 use Core\App;
 use Core\Facades\Facade;
+use Core\Providers\AuthProvider;
 use Core\Providers\ConfigProvider;
 use Core\Providers\DatabaseProvider;
 use Core\Providers\MiddlewareProvider;
@@ -17,6 +18,7 @@ $app = (new App($config))->register([
     DatabaseProvider::class,
     RouterProvider::class,
     RequestProvider::class,
+    AuthProvider::class,
 ]);
 
 Facade::setFacadeApplication($app);
