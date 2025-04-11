@@ -12,10 +12,10 @@ enum OrderingDirection: string
     case Dsc = "DSC";
 }
 
-class QueryBuilder
+abstract class QueryBuilder
 {
-    private string $query;
-    private array $binds = [];
+    protected string $query;
+    protected array $binds = [];
     public array $methods;
 
     public function __construct(private string $table)
