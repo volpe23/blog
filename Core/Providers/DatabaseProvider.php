@@ -2,8 +2,8 @@
 
 namespace Core\Providers;
 
-use Core\Database;
 use Core\ServiceProvider;
+use Core\Database\Database;
 
 class DatabaseProvider extends ServiceProvider
 {

@@ -3,7 +3,8 @@
 namespace Core;
 
 use Core\App;
-use Core\Database;
+use Core\Database\Database;
+use Core\Database\Support\QueryBuilder;
 use Exception;
 
 abstract class Model

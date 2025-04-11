@@ -1,9 +1,10 @@
 <?php
 
-namespace Core;
+namespace Core\Database;
 
 use PDO;
 use PDOStatement;
+use Core\Container;
 
 class Database
 {
