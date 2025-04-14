@@ -81,11 +81,19 @@ class Auth
         session_regenerate_id(true);
     }
 
+    /**
+     * Logs out user
+     * @return void
+     */
     public function logout()
     {
         $this->session->destroy();
     }
 
+    /**
+     * Gets the current user or null if no user is logged in
+     * @return Model|null
+     */
     public function user(): ?Users
     {
         $res = $this->session->check("user") ?

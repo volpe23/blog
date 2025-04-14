@@ -45,10 +45,14 @@ class QueryBuilder
     {
         $reflection = new ReflectionClass(static::class);
         $this->methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-        $this->sqlBuilder = new SqlBuilder($this);
+        $this->sqlBuilder = new SqlBuilder;
     }
 
-    public function select(array $columns = ["*"])
+    /**
+     * Adds columns to select clause
+     * @return $this
+     */
+    public function select(array $columns = ["*"]): self
     {
         $this->binds["select"] = [];
         $this->columns = $columns;
@@ -62,6 +66,7 @@ class QueryBuilder
      * @param string|null $operator
      * @param string|null $value
      * 
+     * @return $this
      */
     public function where(string|array $column, ?string $operator = null, ?string $value = null): self
     {
@@ -77,6 +82,15 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Add a single where
+     * @param string|array $column
+     * @param string|null $operator
+     * @param string|null $value
+     * @param string $boolean
+     * 
+     * @return void
+     */
     protected function addWhere(string $column, string $operator, string $value, string $boolean = "and")
     {
         $this->binds["where"][] = $value;
@@ -86,6 +100,7 @@ class QueryBuilder
     /**
      * Sets the DISTINCT value for query
      * @param bool 
+     * 
      * @return self
      */
     public function distinct($bool = true): self
@@ -94,6 +109,10 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Returns all the results from db based on built query
+     * @return array
+     */
     public function get(): array
     {
         $sql = $this->sqlBuilder->createSelectQuery($this);
@@ -119,19 +138,13 @@ class QueryBuilder
         return $this->connection->insert($sql, $values);
     }
 
+    /**
+     * Returns all the bindings in a single array
+     * @return array
+     */
     protected function getFlatBindings(): array
     {
         return array_reduce($this->binds, fn($res, $curr) => array_merge($res, $curr), []);
-    }
-
-    public function getQuery(): string
-    {
-        return $this->query;
-    }
-
-    public function getBinds(): array
-    {
-        return $this->binds;
     }
 
     /**

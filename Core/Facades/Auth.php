@@ -4,6 +4,7 @@ namespace Core\Facades;
 
 /**
  * @method static bool attempt(Auth)
+ * @method static Model|null user(Auth)
  * @method static login(Auth)
  * @method static logout(Auth)
  */

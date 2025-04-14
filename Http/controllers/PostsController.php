@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Core\Models\Post;
-use Core\Auth;
+use Core\Facades\Auth;
 use Core\Request;
 
 class PostsController
