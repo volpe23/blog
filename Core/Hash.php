@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Facades\Session;
+
 class Hash
 {
 

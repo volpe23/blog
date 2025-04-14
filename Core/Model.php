@@ -118,6 +118,7 @@ abstract class Model
      */
     public function get(): array
     {
+        // TODO: refactor to 
         return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchAllClass(static::class);
     }
 

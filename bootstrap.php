@@ -22,6 +22,7 @@ $app = (new App($config))->register([
     AuthProvider::class,
     SessionProvider::class,
 ]);
+$app->boot();
 
 Facade::setFacadeApplication($app);
 

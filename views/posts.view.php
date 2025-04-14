@@ -1,7 +1,7 @@
-<div class="md:max-w-3xl mx-auto">
+<div class="mx-auto">
     <?php
 
-    use Core\Auth;
+    use Core\Facades\Auth;
 
     if (Auth::check()) view("post_create") ?>
     <?php if (isset($posts)): ?>

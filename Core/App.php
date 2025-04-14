@@ -8,7 +8,10 @@ use ReflectionClass;
 
 class App extends Container implements ArrayAccess
 {
-    public function __construct(protected array $config) {}
+    public function __construct(protected array $config)
+    {
+        $this->singleton("app", fn() => $this);
+    }
 
     /**
      * Returns a config setting

@@ -52,12 +52,12 @@ class QueryBuilder
 
     /**
      * Adds where to the query
-     * @param string $column
+     * @param string|array $column
      * @param string|null $operator
      * @param string|null $value
      * 
      */
-    public function where(string $column, ?string $operator = null, ?string $value = null): self
+    public function where(string|array $column, ?string $operator = null, ?string $value = null): self
     {
         if (is_array($column)) {
             foreach ($column as $col) {
