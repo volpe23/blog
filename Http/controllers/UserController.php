@@ -4,7 +4,7 @@ namespace Controllers;
 
 use Core\Models\Users;
 use Core\Request;
-use Core\Auth;
+use Core\Facades\Auth;
 
 class UserController
 {

@@ -138,7 +138,7 @@ class Route
     private function executeMiddlewares()
     {
         foreach ($this->middlewares as $middleware) {
-            call_user_func($middleware);
+            call_user_func($middleware, $this->container);
         }
     }
 

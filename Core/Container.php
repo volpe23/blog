@@ -58,11 +58,13 @@ class Container implements ContainerInterface, ArrayAccess
         return $this->resolve($id);
     }
 
-    public function make(string $key) {
+    public function make(string $key)
+    {
         return $this->entries[$key]();
     }
 
-    public function singleton(string $id, callable $resolver): void {
+    public function singleton(string $id, callable $resolver): void
+    {
         $this->entries[$id] = function () use ($resolver) {
             static $instance;
             if (!$instance) {
@@ -107,7 +109,7 @@ class Container implements ContainerInterface, ArrayAccess
 
     public function offsetExists(mixed $offset): bool
     {
-        return isset($this->entries); 
+        return isset($this->entries);
     }
 
     /**
@@ -115,7 +117,8 @@ class Container implements ContainerInterface, ArrayAccess
      * 
      * @return mixed
      */
-    public function offsetGet($offset): mixed {
+    public function offsetGet($offset): mixed
+    {
         return call_user_func($this->entries[$offset]);
     }
 
@@ -125,15 +128,21 @@ class Container implements ContainerInterface, ArrayAccess
      * 
      * @return void
      */
-    public function offsetSet($offset, $value): void {
+    public function offsetSet($offset, $value): void
+    {
         $this->entries[$offset] = $value;
     }
 
     /**
      * @param string $offset
      */
-    public function offsetUnset($offset): void {
+    public function offsetUnset($offset): void
+    {
         unset($this->entries[$offset]);
     }
 
+    public function __call($key, $args)
+    {
+        return $this->get($key);
+    }
 }

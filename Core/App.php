@@ -48,4 +48,10 @@ class App extends Container implements ArrayAccess
         return $this;
     }
 
+    public function boot()
+    {
+        foreach ($this->providers as $provider) {
+            $provider->boot($this);
+        }
+    }
 }

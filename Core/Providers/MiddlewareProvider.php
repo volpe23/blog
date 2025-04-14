@@ -9,6 +9,6 @@ class MiddlewareProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton("middleware", fn() => new Middleware());
+        $this->app->singleton("middleware", fn($app) => new Middleware($app));
     }
 }

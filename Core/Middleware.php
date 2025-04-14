@@ -10,6 +10,11 @@ use Exception;
 class Middleware
 {
     /**
+     * @var Container $app
+     */
+    public function __construct(protected Container $app) {}
+
+    /**
      * @var array<string, MiddlewareInterface> MAP
      */
     public const MAP = [
@@ -19,9 +24,11 @@ class Middleware
     ];
 
     /**
+     * @var string $key
+     * 
      * @return callable
      */
-    public function resolve($key)
+    public function resolve(string $key)
     {
         if (!$key) return;
 

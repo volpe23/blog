@@ -12,4 +12,7 @@ abstract class ServiceProvider
     }
 
     abstract function register();
+
+    // Optional
+    public function boot() {}
 }

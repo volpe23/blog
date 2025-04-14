@@ -14,7 +14,7 @@ class DatabaseProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton("db", fn() => new Database($this->app->getConfigValue("database"), $this->app));
+        $this->app->singleton("db", fn($app) => new Database($app->getConfigValue("database"), $app));
     }
 
     /**
@@ -22,7 +22,5 @@ class DatabaseProvider extends ServiceProvider
      * 
      * @return void
      */
-    public function boot() {
-
-    }
+    public function boot() {}
 }

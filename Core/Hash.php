@@ -6,6 +6,7 @@ class Hash
 {
 
     public const CSRF_TOKEN_KEY = "csrf_token";
+
     public static function generateCsrf()
     {
         Session::set(static::CSRF_TOKEN_KEY, bin2hex(random_bytes(32)));

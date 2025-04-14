@@ -9,9 +9,9 @@ use Core\Session;
 
 class Csrf implements MiddlewareInterface
 {
-    public function handle()
+    public function handle($app)
     {
-        $request = App::resolve(Request::class);
+        $request = $app->get("request");
         $csrfTokenKey = Hash::CSRF_TOKEN_KEY;
 
         $inputToken = $request->$csrfTokenKey;

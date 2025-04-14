@@ -16,7 +16,7 @@
                 <ul class="flex gap-6">
                     <?php
 
-                    use Core\Auth;
+                    use Core\Facades\Auth;
 
                     foreach ($navRoutes as $route => $options) {
                         if ($options["restriction"]): ?>

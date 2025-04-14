@@ -1,9 +1,5 @@
 <?php
 
-use Core\App;
-use Core\Router;
-use Core\Session;
-
 const BASE_PATH = __DIR__ . "/../";
 
 session_start();
@@ -19,7 +15,7 @@ $uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 $method = $_SERVER["REQUEST_METHOD"];
 
 $app->get("router")->route($uri, $method);
-Session::unflash();
+$app->session()->unflash();
 
 
 require __DIR__ . "/../views/partials/foot.php";

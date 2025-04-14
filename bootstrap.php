@@ -8,6 +8,7 @@ use Core\Providers\DatabaseProvider;
 use Core\Providers\MiddlewareProvider;
 use Core\Providers\RequestProvider;
 use Core\Providers\RouterProvider;
+use Core\Providers\SessionProvider;
 
 require BASE_PATH . "config.php";
 
@@ -19,6 +20,7 @@ $app = (new App($config))->register([
     RouterProvider::class,
     RequestProvider::class,
     AuthProvider::class,
+    SessionProvider::class,
 ]);
 
 Facade::setFacadeApplication($app);

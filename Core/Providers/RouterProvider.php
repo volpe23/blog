@@ -9,6 +9,6 @@ class RouterProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton("router", fn() => new Router($this->app));
+        $this->app->singleton("router", fn($app) => new Router($app));
     }
 }

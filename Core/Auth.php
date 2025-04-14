@@ -9,25 +9,47 @@ use Core\Models\Users;
 class Auth
 {
     /**
-     * @param class-string<Model> $usersModel
+     * @param class-string<Model> $userModel
      */
-    private static string $usersModel;
-    public static ?Model $user;
-    // Create a class that stores info about current user
-    public static function check(): bool
+    private string $userModel;
+
+    /**
+     * User identifying column
+     */
+    private string $userIdentifier;
+
+    public ?Model $user;
+
+    /**
+     * Session instance from conatiner
+     * @var Session $session
+     */
+    protected $session;
+
+
+    public function __construct(protected Container $app)
     {
-        return Session::check("user");
+        $this->session = $app->get("session");
+    }
+
+    /**
+     * Checks if there is a user stored in session
+     * @return bool
+     */
+    public function check(): bool
+    {
+        return $this->app->session()->check("user");
     }
 
     /**
      * @param array{username: string, password: string} $credentials
      */
-    public static function attempt(array $credentials): bool
+    public function attempt(array $credentials): bool
     {
         if (!isset($credentials["username"], $credentials["password"])) {
             return false;
         }
-        $user = self::$usersModel::where([
+        $user = $this->userModel::where([
             [
                 "username",
                 "=",
@@ -46,27 +68,34 @@ class Auth
         return false;
     }
 
-    public static function login($user)
+    /**
+     * @param Model $user
+     * 
+     * @return void
+     */
+    public function login($user)
     {
-        Session::set("user", [
+        $this->session->set("user", [
             "username" => $user->username
         ]);
         session_regenerate_id(true);
     }
 
-    public static function logout()
+    public function logout()
     {
-        Session::destroy();
+        $this->session->destroy();
     }
 
-    public static function user(): ?Users
+    public function user(): ?Users
     {
-        $res = Session::check("user") ? self::$usersModel::where("username", Session::get("user")["username"])->first() : null;
+        $res = $this->session->check("user") ?
+            $this->userModel::where("username", $this->session->get("user")["username"])->first()
+            : null;
         return $res;
     }
 
-    public static function init($usersModel)
+    public function setUserModel(string $userModel)
     {
-        static::$usersModel = $usersModel;
+        $this->userModel = $userModel;
     }
 }

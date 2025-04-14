@@ -2,7 +2,7 @@
 
 use Controllers\PostsController;
 use Core\Facades\Route;
-use Core\Auth;
+use Core\Facades\Auth;
 use Controllers\UserController;
 
 $navRoutes = [

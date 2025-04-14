@@ -3,5 +3,5 @@
 namespace Core\Middleware;
 
 interface MiddlewareInterface {
-    public function handle();
+    public function handle($app);
 }
