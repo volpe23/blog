@@ -9,7 +9,8 @@ class Authenticated implements MiddlewareInterface
     public function handle($app)
     {
         if (!$app->session()->check("user")) {
-            redirect("/login");
+            echo "not logged in";
+            // redirect("/login");
         }
     }
 }

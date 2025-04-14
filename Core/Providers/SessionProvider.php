@@ -9,6 +9,6 @@ class SessionProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind("session", fn() => new Session($_SESSION));
+        $this->app->singleton("session", fn() => new Session());
     }
 }

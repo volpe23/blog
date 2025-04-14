@@ -38,7 +38,7 @@ class Auth
      */
     public function check(): bool
     {
-        return $this->app->session()->check("user");
+        return $this->session->check("user");
     }
 
     /**
@@ -59,8 +59,8 @@ class Auth
 
         if ($user) {
             if (password_verify($credentials["password"], $user->password)) {
-                self::$user = $user;
-                self::login($user);
+                $this->user = $user;
+                $this->login($user);
                 return true;
             };
         }
@@ -89,7 +89,7 @@ class Auth
     public function user(): ?Users
     {
         $res = $this->session->check("user") ?
-            $this->userModel::where("username", $this->session->get("user")["username"])->first()
+            $this->userModel::where("username", "=", $this->session->get("user")["username"])->first()
             : null;
         return $res;
     }

@@ -41,7 +41,6 @@ class Database
      */
     public function query(string $query, array $attrs = []): Database
     {
-        dd($query);
         $this->statement = $this->conn->prepare($query);
         if (!$this->statement->execute($attrs)) echo "Query failed";
 

@@ -6,12 +6,6 @@ class Session
 {
 
     /**
-     * The $_SESSION variable
-     * @param array $session
-     */
-    public function __construct(protected array $session) {}
-
-    /**
      * Checks if is set in Session
      * @param string $key
      * 
@@ -19,7 +13,7 @@ class Session
      */
     public function check(string $key): bool
     {
-        return isset($this->session[$key]);
+        return isset($_SESSION[$key]);
     }
 
     /**
@@ -31,7 +25,7 @@ class Session
      */
     public function set(string $key, mixed $value)
     {
-        $this->session[$key] = $value;
+        $_SESSION[$key] = $value;
     }
 
     /**
@@ -43,7 +37,7 @@ class Session
      */
     public function flash(string $key, mixed $value)
     {
-        $this->session["_flash"][$key] = $value;
+        $_SESSION["_flash"][$key] = $value;
     }
 
     /**
@@ -52,7 +46,7 @@ class Session
      */
     public function destroy()
     {
-        $this->session = [];
+        $_SESSION = [];
         session_destroy();
         $params = session_get_cookie_params();
         setcookie('PHPSESSID', '', time() - 3600, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
@@ -60,7 +54,7 @@ class Session
 
     public function unflash()
     {
-        unset($this->session["_flash"]);
+        unset($_SESSION["_flash"]);
     }
 
     /**
@@ -71,7 +65,7 @@ class Session
      */
     public function setErrors(array $errors)
     {
-        $this->session["_flash"]["errors"] = $errors;
+        $_SESSION["_flash"]["errors"] = $errors;
     }
 
     /**
@@ -80,7 +74,7 @@ class Session
      */
     public function errors()
     {
-        return $this->session["_flash"]["errors"] ?? false;
+        return $_SESSION["_flash"]["errors"] ?? false;
     }
 
     /**
@@ -89,6 +83,6 @@ class Session
      */
     public function get(string $key): mixed
     {
-        return $this->session[$key] ?? false;
+        return $_SESSION[$key] ?? false;
     }
 }

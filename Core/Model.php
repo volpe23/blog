@@ -25,7 +25,7 @@ abstract class Model
         $this->db = DB::getInstance();
 
         $this->table = $this->table ?? $this->getTableName();
-        $this->qb = new QueryBuilder($this->table, $this->db);
+        // $this->qb = new QueryBuilder($this->table, $this->db);
 
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
@@ -105,26 +105,28 @@ abstract class Model
         return [];
     }
 
-    public static function where(string | array $col, mixed $value = NULL, string $comp = "="): static
+    public static function where(string | array $col, mixed $value = NULL, string $comp = "="): QueryBuilder
     {
         $instance = new static();
-        $instance->qb->select()->where($col, $value, $comp);
-
-        return $instance;
+        return $instance->newQueryBuilder()->select()->where($col, $value, $comp);
     }
 
     /**
-     * @return static[]
+     * Create a new query
+     * @return void
      */
-    public function get(): array
+    public function newQuery(): void
     {
-        // TODO: refactor to 
-        return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchAllClass(static::class);
+        $this->qb = $this->newQueryBuilder();
     }
 
-    public function first(): static
+    /**
+     * Create a new QueryBuilder for the instance and sets the model to this instance
+     * @return Querybuilder
+     */
+    public function newQueryBuilder(): QueryBuilder
     {
-        return $this->db->query($this->qb->getQuery(), $this->qb->getBinds())->fetchClass(static::class);
+        return (new QueryBuilder($this->table, $this->db))->setModel($this);
     }
 
     public function belongsTo(string $class)

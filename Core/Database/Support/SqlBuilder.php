@@ -12,7 +12,7 @@ class SqlBuilder
 
     public function createSelectQuery(QueryBuilder $builder): string
     {
-        return implode(" ", $this->compileComponents($builder));
+        return "SELECT " . implode(" ", $this->compileComponents($builder));
     }
     public function compileComponents(QueryBuilder $builder): array
     {
@@ -29,7 +29,7 @@ class SqlBuilder
 
     protected function compileColumns(QueryBuilder $builder, $columns): string
     {
-        $select = "SELECT " . $builder->distinct ? 'DISCTINCT ' : '';
+        $select = "SELECT " . $builder->distinct ? 'DISTINCT ' : '';
 
         return $select . join(", ", $columns);
     }
@@ -51,7 +51,6 @@ class SqlBuilder
 
     protected function compileWhere(array $where): string
     {
-
         return $where["boolean"] . " " . $where["column"] . " " . $where["operator"] . " ?";
     }
 

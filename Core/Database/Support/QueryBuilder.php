@@ -5,6 +5,7 @@ namespace Core\Database\Support;
 use ReflectionClass;
 use ReflectionMethod;
 use Core\Database\Database;
+use Core\Model;
 
 
 
@@ -14,7 +15,7 @@ class QueryBuilder
     /**
      * @var array|null
      */
-    protected array $columns;
+    public array $columns;
     /**
      * @var array
      */
@@ -28,12 +29,17 @@ class QueryBuilder
      * Where constraints for query
      * @var array<int, array<int, string>>
      */
-    protected array $wheres = [];
+    public array $wheres = [];
 
     public bool $distinct = false;
     public array $methods;
 
     protected $sqlBuilder;
+
+    /**
+     * @var Model $model
+     */
+    protected $model;
 
     public function __construct(public string $table, private Database $connection)
     {
@@ -61,7 +67,8 @@ class QueryBuilder
     {
         if (is_array($column)) {
             foreach ($column as $col) {
-                $this->addWhere(...$col);
+                [$column, $operator, $value] = $col;
+                $this->addWhere($column, $operator, $value);
             }
         } else {
             $this->addWhere($column, $operator, $value);
@@ -73,7 +80,7 @@ class QueryBuilder
     protected function addWhere(string $column, string $operator, string $value, string $boolean = "and")
     {
         $this->binds["where"][] = $value;
-        $this->wheres[] = compact($column, $operator, $value, $boolean);
+        $this->wheres[] = compact("column", "operator", "value", "boolean");
     }
 
     /**
@@ -87,11 +94,16 @@ class QueryBuilder
         return $this;
     }
 
-    public function get()
+    public function get(): array
     {
         $sql = $this->sqlBuilder->createSelectQuery($this);
 
-        $this->connection->query($sql, $this->getFlatBindings())->fetchAll();
+        return $this->connection->query($sql, $this->getFlatBindings())->fetchAllClass($this->model::class);
+    }
+
+    public function first(): Model
+    {
+        return $this->connection->query($this->sqlBuilder->createSelectQuery($this), $this->getFlatBindings())->fetchClass($this->model::class);
     }
 
     /**
@@ -109,7 +121,7 @@ class QueryBuilder
 
     protected function getFlatBindings(): array
     {
-        return array_reduce($this->binds, fn($res, $curr) => array_merge($res, $curr));
+        return array_reduce($this->binds, fn($res, $curr) => array_merge($res, $curr), []);
     }
 
     public function getQuery(): string
@@ -121,4 +133,24 @@ class QueryBuilder
     {
         return $this->binds;
     }
+
+    /**
+     * @param Model $model;
+     * 
+     * @return $this
+     */
+    public function setModel(Model $model): self
+    {
+        $this->model = $model;
+        return $this;
+    }
+
+    // /**
+    //  * Retrieves and builds the sql query
+    //  * @return string
+    //  */
+    // public function getSqlQuery(): string
+    // {
+    // return $this->sqlBuilder->createSelectQuery($this);
+    // }
 }

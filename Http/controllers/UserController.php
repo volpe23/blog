@@ -17,7 +17,7 @@ class UserController
             "username" => $username,
             "password" => $password
         ])) {
-            return view("/login", [
+            return view("login", [
                 "usernameError" => "Username not correct",
                 "passwordError" => "Password not correct"
             ]);
