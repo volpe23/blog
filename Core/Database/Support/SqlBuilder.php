@@ -13,10 +13,13 @@ class SqlBuilder
     /**
      * Created a SELECT db query
      * @param QueryBuilder $builder
+     * @param string[]
+     * 
      * @return string
      */
-    public function createSelectQuery(QueryBuilder $builder): string
+    public function createSelectQuery(QueryBuilder $builder, array $columns): string
     {
+        $builder->columns = $columns;
         return "SELECT " . implode(" ", $this->compileComponents($builder));
     }
 
@@ -46,7 +49,7 @@ class SqlBuilder
      * 
      * @return string
      */
-    protected function compileColumns(QueryBuilder $builder, array $columns): string
+    protected function compileColumns(QueryBuilder $builder, ?array $columns = ["*"]): string
     {
         $select = "SELECT " . $builder->distinct ? 'DISTINCT ' : '';
 

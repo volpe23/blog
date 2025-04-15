@@ -107,6 +107,14 @@ class Database
     }
 
     /**
+     * Create a new query builder with a table set
+     */
+    public function table(string $table): QueryBuilder
+    {
+        return $this->newQueryBuilder($table);
+    }
+
+    /**
      * Returns new query builder
      * @param string $table
      * 

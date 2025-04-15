@@ -135,16 +135,22 @@ class QueryBuilder
      * Returns all the results from db based on built query
      * @return array
      */
-    public function get(): array
+    public function get(array $columns = ["*"]): array
     {
-        $sql = $this->sqlBuilder->createSelectQuery($this);
+        $sql = $this->sqlBuilder->createSelectQuery($this, $columns);
 
         return $this->connection->query($sql, $this->getFlatBindings())->fetchAllClass($this->model::class);
     }
 
-    public function first(): Model
+    /**
+     * Gets the first matching result from the database
+     * @param string[] $columns
+     * 
+     * @return Model
+     */
+    public function first(array $columns = ["*"]): Model
     {
-        return $this->connection->query($this->sqlBuilder->createSelectQuery($this), $this->getFlatBindings())->fetchClass($this->model::class);
+        return $this->connection->query($this->sqlBuilder->createSelectQuery($this, $columns), $this->getFlatBindings())->fetchClass($this->model::class);
     }
 
     /**

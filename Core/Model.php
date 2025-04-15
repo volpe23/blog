@@ -6,6 +6,7 @@ use Core\App;
 use Core\Facades\Database as DB;
 use Core\Database\Database;
 use Core\Database\Support\QueryBuilder;
+use Core\Facades\Database as FacadesDatabase;
 use Exception;
 
 abstract class Model
@@ -54,7 +55,7 @@ abstract class Model
      */
     protected QueryBuilder $qb;
 
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
         $this->db = DB::getInstance();
 
@@ -63,7 +64,6 @@ abstract class Model
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
         }
-        $this->removeHiddenFields();
     }
 
     public function __set(string $attr, $val)
@@ -72,6 +72,7 @@ abstract class Model
     }
     public function __get(string $prop): mixed
     {
+        if (isset($this->hidden) && array_search($prop, $this->hidden)) return null;
         return $this->attributes[$prop] ?? null;
     }
 
@@ -79,6 +80,11 @@ abstract class Model
     {
         if (in_array($name, $this->qb->methods)) throw new Exception("$name query method does not exist");
         $this->qb->$name(...$arguments);
+        return $this;
+    }
+
+    public function fill(array $attributes): static
+    {
         return $this;
     }
 
@@ -148,30 +154,31 @@ abstract class Model
     public static function create(array $attributes): static|bool
     {
         $inst = new static();
+        $inst->newQuery();
         $inst->attributes = $attributes;
         if ($inst->createEntry($attributes)) return $inst;
         return false;
     }
 
-    public static function all(): array
-    {
-        // return App::resolve(Database::class)->query("SELECT * FROM " . static::getTableName())->fetchAllClass(static::class);
-        return [];
-    }
-
-    public static function where(string | array $col, mixed $value = NULL, string $comp = "="): QueryBuilder
+    /**
+     * Get all the records of table from the database
+     * @param string[] $columns
+     * 
+     * @return Model[]
+     */
+    public static function all(array $columns = ["*"]): array
     {
         $instance = new static();
-        return $instance->newQueryBuilder()->select()->where($col, $value, $comp);
+        return $instance->newQueryBuilder()->get($columns);
     }
 
     /**
      * Create a new query
-     * @return void
+     * @return QueryBuilder
      */
-    public function newQuery(): void
+    public function newQuery(): QueryBuilder
     {
-        $this->qb = $this->newQueryBuilder();
+        return $this->newQueryBuilder();
     }
 
     /**
@@ -204,5 +211,15 @@ abstract class Model
     public static function with()
     {
         // TODO: implement function that gets the related model
+    }
+
+    public static function query(): QueryBuilder
+    {
+        return (new static)->newQuery();
+    }
+
+    public static function __callStatic($method, $args)
+    {
+        return (new static)::query()->$method(...$args);
     }
 }

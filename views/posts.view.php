@@ -7,7 +7,6 @@
     <?php if (isset($posts)): ?>
         <?php if (count($posts) > 0): ?>
             <?php foreach ($posts as $post): ?>
-                <?= var_dump($post); ?>
                 <div class="flex flex-col gap-2 rounded border border-gray-200 shadow bg-gray-300">
                     <h3><?= $post->title ?></h3>
                     <p><?= $post->text ?></p>
