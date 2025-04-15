@@ -10,14 +10,48 @@ use Exception;
 
 abstract class Model
 {
+    /**
+     * Applications database instance
+     * @var Database
+     */
     protected Database $db;
+
+    /**
+     * Db table name that models is connected to
+     * @var string
+     */
     public readonly string $table;
 
+    /**
+     * Tables id identifier
+     * @var string
+     */
     protected string $primaryKey = "id";
+
+    /**
+     * Model attributes that are fetched from db
+     * @var array $attributes
+     */
     protected array $attributes;
+
+    /**
+     * Timestamp fields
+     * @var array|bool $timestamps
+     */
     protected array | bool $timestamps = ["created_at", "updated_at"];
+
     protected array $fields;
     // TODO: implement hidden fields
+    /**
+     * Fields that should not bet attached to model instance
+     * @var array $hidden
+     */
+    protected array $hidden;
+
+    /**
+     * Querybuilder instance
+     * @var QueryBuilder $qb
+     */
     protected QueryBuilder $qb;
 
     public function __construct()
@@ -25,11 +59,11 @@ abstract class Model
         $this->db = DB::getInstance();
 
         $this->table = $this->table ?? $this->getTableName();
-        // $this->qb = new QueryBuilder($this->table, $this->db);
 
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
         }
+        $this->removeHiddenFields();
     }
 
     public function __set(string $attr, $val)
@@ -48,12 +82,20 @@ abstract class Model
         return $this;
     }
 
-    public function id()
+    /**
+     * Returns id of the model
+     * @return string
+     */
+    public function id(): string
     {
         return $this->attributes[$this->primaryKey];
     }
 
-    private static function getTableName()
+    /**
+     * Gets the table name based on model class name
+     * @return string
+     */
+    private static function getTableName(): string
     {
         $classExpl = explode("\\", static::class);
         $explLen = count($classExpl);
@@ -70,8 +112,11 @@ abstract class Model
         return join(",", array_map(fn($val) => ":" . $val, array_keys($this->attributes)));
     }
 
-
-    private function setId($id)
+    /**
+     * Sets the id to the model
+     * @return void
+     */
+    private function setId($id): void
     {
         $this->primaryKey = $id;
         $this->attributes["id"] = $id;
@@ -85,18 +130,27 @@ abstract class Model
         $this->setId($this->db->lastId($this->table));
     }
 
-    public function createEntry(array $values): void
+    /**
+     * Creates the database entry
+     * @return bool
+     */
+    public function createEntry(array $values): bool
     {
-        // Implement model db creation
-        $this->qb->insert($values);
+        return $this->qb->insert($values);
     }
 
-    public static function create(array $attributes): static
+    /**
+     * Created database entry and returns model instance
+     * @param array $attributes
+     * 
+     * @return static|bool
+     */
+    public static function create(array $attributes): static|bool
     {
         $inst = new static();
         $inst->attributes = $attributes;
-        $inst->createEntry($attributes);
-        return $inst;
+        if ($inst->createEntry($attributes)) return $inst;
+        return false;
     }
 
     public static function all(): array
@@ -127,6 +181,19 @@ abstract class Model
     public function newQueryBuilder(): QueryBuilder
     {
         return (new QueryBuilder($this->table, $this->db))->setModel($this);
+    }
+
+    /**
+     * Removes hidden fields from attributes
+     * @return void
+     */
+    protected function removeHiddenFields(): void
+    {
+        if (isset($this->hidden)) {
+            foreach ($this->hidden as $hiddenKey) {
+                unset($this->attributes[$hiddenKey]);
+            }
+        }
     }
 
     public function belongsTo(string $class)

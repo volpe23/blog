@@ -61,7 +61,7 @@ class QueryBuilder
     }
 
     /**
-     * Adds where to the query
+     * Adds AND where to the query
      * @param string|array $column
      * @param string|null $operator
      * @param string|null $value
@@ -77,6 +77,28 @@ class QueryBuilder
             }
         } else {
             $this->addWhere($column, $operator, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds OR where to the query
+     * @param string|array $column
+     * @param string|null $operator
+     * @param string|null $value
+     * 
+     * @return $this
+     */
+    public function orWhere(string|array $column, ?string $operator = null, ?string $value = null): self
+    {
+        if (is_array($column)) {
+            foreach ($column as $col) {
+                [$column, $operator, $value] = $col;
+                $this->addWhere($column, $operator, $value, "or");
+            }
+        } else {
+            $this->addWhere($column, $operator, $value, "or");
         }
 
         return $this;
@@ -157,13 +179,4 @@ class QueryBuilder
         $this->model = $model;
         return $this;
     }
-
-    // /**
-    //  * Retrieves and builds the sql query
-    //  * @return string
-    //  */
-    // public function getSqlQuery(): string
-    // {
-    // return $this->sqlBuilder->createSelectQuery($this);
-    // }
 }
