@@ -72,7 +72,6 @@ abstract class Model
     }
     public function __get(string $prop): mixed
     {
-        if (isset($this->hidden) && array_search($prop, $this->hidden)) return null;
         return $this->attributes[$prop] ?? null;
     }
 
@@ -89,15 +88,6 @@ abstract class Model
     }
 
     /**
-     * Returns id of the model
-     * @return string
-     */
-    public function id(): string
-    {
-        return $this->attributes[$this->primaryKey];
-    }
-
-    /**
      * Gets the table name based on model class name
      * @return string
      */
@@ -106,16 +96,6 @@ abstract class Model
         $classExpl = explode("\\", static::class);
         $explLen = count($classExpl);
         return strtolower($classExpl[$explLen - 1]);
-    }
-
-    private function getAttributesString(): string
-    {
-        return join(", ", array_keys($this->attributes));
-    }
-
-    private function getAttributesPlaceholders(): string
-    {
-        return join(",", array_map(fn($val) => ":" . $val, array_keys($this->attributes)));
     }
 
     /**
