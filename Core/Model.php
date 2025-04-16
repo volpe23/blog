@@ -176,12 +176,23 @@ abstract class Model
         // TODO: implement function that gets the related model
     }
 
+    /**
+     * Created new model instance and returns querybuilder
+     * @return QueryBUilder
+     */
     public static function query(): QueryBuilder
     {
         return (new static)->newQuery();
     }
 
-    public static function __callStatic($method, $args)
+    /**
+     * When calling a query method on model return a new instance and querybuilder
+     * @param string $method
+     * @param array $args
+     * 
+     * @return static
+     */
+    public static function __callStatic(string $method, array $args): static
     {
         return (new static)::query()->$method(...$args);
     }

@@ -6,15 +6,11 @@ use Core\Validator;
 
 class Request
 {
-    private array $query;
-    private array $body;
-    private array $server;
     private array $errors;
-    public function __construct(array $query, array $body, array $server, private array $session)
+    private Session $session;
+    public function __construct(private array $query, private array $body, private array $server, App $app)
     {
-        $this->query = $query;
-        $this->body = $body;
-        $this->server = $server;
+        $this->session = $app->get("session");
     }
 
     public function __get(string $param): string | null
@@ -43,7 +39,7 @@ class Request
         }
 
         if (!empty($this->errors)) {
-            Session::setErrors($this->errors);
+            $this->session->setErrors($this->errors);
             redirect($this->server["REQUEST_URI"]);
         }
         return $this->body;

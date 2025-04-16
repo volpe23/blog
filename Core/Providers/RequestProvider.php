@@ -9,6 +9,6 @@ class RequestProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton(Request::class, fn() => new Request($_GET, $_POST, $_SERVER, $_SESSION));
+        $this->app->singleton(Request::class, fn($app) => new Request($_GET, $_POST, $_SERVER, $app));
     }
 }
