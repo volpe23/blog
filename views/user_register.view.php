@@ -10,7 +10,7 @@ use Core\Middleware\Csrf;
             <input name="username" id="username" class="form-input <?= isset($usernameError) && !empty($usernameError) ? "input-error" : "" ?>" placeholder="Username">
             <?php
 
-            use Core\Session;
+            use Core\Facades\Session;
 
             if (isset($usernameError)): ?>
                 <span class="form-error-message"><?= $usernameError ?></span>

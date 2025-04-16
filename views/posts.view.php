@@ -11,6 +11,7 @@
                     <h3><?= $post->title ?></h3>
                     <p><?= $post->text ?></p>
                     <span>Created <?= time() - $post->created_at ?></span>
+                    <p><?= $post->user()->username ?></p>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

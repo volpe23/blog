@@ -74,7 +74,8 @@ abstract class Model
 
     public function __set(string $attr, $val)
     {
-        if (array_key_exists($attr, $this->attributes)) $this->updatedFields[] = $attr; $this->attributes[$attr] = $val;
+        if (isset($this->attributes) && array_key_exists($attr, $this->attributes)) $this->updatedFields[] = $attr;
+        $this->attributes[$attr] = $val;
     }
 
     public function __get(string $prop): mixed
@@ -214,8 +215,11 @@ abstract class Model
         // TODO: establishes relation
     }
 
-    public static function with()
+    public function with(string $relatedField, string $modelClass): Model
     {
+        $fk = $this->attributes[$relatedField];
+        dd($this);
+        return $modelClass::where($relatedField, "=", $fk);
         // TODO: implement function that gets the related model
     }
 
