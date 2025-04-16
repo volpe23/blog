@@ -6,8 +6,6 @@ use Core\App;
 use Core\Facades\Database as DB;
 use Core\Database\Database;
 use Core\Database\Support\QueryBuilder;
-use Core\Facades\Database as FacadesDatabase;
-use Exception;
 
 abstract class Model
 {
@@ -75,13 +73,6 @@ abstract class Model
         return $this->attributes[$prop] ?? null;
     }
 
-    public function __call($name, $arguments)
-    {
-        if (in_array($name, $this->qb->methods)) throw new Exception("$name query method does not exist");
-        $this->qb->$name(...$arguments);
-        return $this;
-    }
-
     public function fill(array $attributes): static
     {
         return $this;
@@ -106,14 +97,6 @@ abstract class Model
     {
         $this->primaryKey = $id;
         $this->attributes["id"] = $id;
-    }
-
-    public function save(): void
-    {
-        $this->db->query("INSERT INTO {$this->table} ({$this->getAttributesString()}) VALUES 
-        ({$this->getAttributesPlaceholders()})", $this->attributes);
-
-        $this->setId($this->db->lastId($this->table));
     }
 
     /**

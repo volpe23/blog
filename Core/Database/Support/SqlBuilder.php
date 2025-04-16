@@ -7,7 +7,8 @@ class SqlBuilder
     protected array $selectComponents = [
         "columns",
         "table",
-        "wheres"
+        "wheres",
+        "orders",
     ];
 
     /**
@@ -93,6 +94,16 @@ class SqlBuilder
     protected function compileWhere(array $where): string
     {
         return $where["boolean"] . " " . $where["column"] . " " . $where["operator"] . " ?";
+    }
+
+    public function compileOrders(QueryBuilder $builder, array $orders): string
+    {
+        if (count($orders) > 0) {
+            $str = implode(", ", array_map(fn($order) => implode(" ", $order), $orders));
+            return "ORDER BY " . $str;
+        }
+
+        return "";
     }
 
     /**

@@ -6,8 +6,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use Core\Database\Database;
 use Core\Model;
-
-
+use RuntimeException;
 
 class QueryBuilder
 {
@@ -31,8 +30,13 @@ class QueryBuilder
      */
     public array $wheres = [];
 
+    public array $orders = [];
+
+    /**
+     * Flag if SELECT query should be DISTINCT
+     * @var bool $distinct
+     */
     public bool $distinct = false;
-    public array $methods;
 
     protected $sqlBuilder;
 
@@ -43,8 +47,6 @@ class QueryBuilder
 
     public function __construct(public string $table, private Database $connection)
     {
-        $reflection = new ReflectionClass(static::class);
-        $this->methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         $this->sqlBuilder = new SqlBuilder;
     }
 
@@ -117,6 +119,39 @@ class QueryBuilder
     {
         $this->binds["where"][] = $value;
         $this->wheres[] = compact("column", "operator", "value", "boolean");
+    }
+
+    /**
+     * Add order to query
+     * @param string|array $column
+     * @param string "ASC"|"DSC" $direction
+     * 
+     * @return $this
+     */
+    public function order(string|array $column, string $direction = "ASC"): self
+    {
+        if (is_array($column)) {
+            foreach ($column as $col) {
+                if (count($col) < 2) throw new RuntimeException("wrong order argument provided");
+                $this->addOrder(...$col);
+            }
+        }
+        $this->addOrder($column, $direction);
+
+        return $this;
+    }
+
+    /**
+     * Add a single order
+     * @param string $column
+     * @param string $direction
+     * 
+     * @return void
+     */
+    protected function addOrder(string $column, string $direction = "ASC"): void
+    {
+        $direction = strtoupper($direction);
+        $this->orders[] = [$column, $direction];
     }
 
     /**
