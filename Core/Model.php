@@ -39,6 +39,12 @@ abstract class Model
      */
     protected array | bool $timestamps = ["created_at", "updated_at"];
 
+    /**
+     * Array of columns which have been updated
+     * @var array $updatedFields
+     */
+    protected array $updatedFields = [];
+
     protected array $fields;
     // TODO: implement hidden fields
     /**
@@ -62,19 +68,29 @@ abstract class Model
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
         }
+
+        $this->fill($attributes);
     }
 
     public function __set(string $attr, $val)
     {
-        $this->attributes[$attr] = $val;
+        if (array_key_exists($attr, $this->attributes)) $this->updatedFields[] = $attr; $this->attributes[$attr] = $val;
     }
+
     public function __get(string $prop): mixed
     {
         return $this->attributes[$prop] ?? null;
     }
 
+    /**
+     * Fills the attributes on model
+     * @param array $attributes
+     * 
+     * @return $this
+     */
     public function fill(array $attributes): static
     {
+        $this->attributes = $attributes;
         return $this;
     }
 
@@ -103,24 +119,51 @@ abstract class Model
      * Creates the database entry
      * @return bool
      */
-    public function createEntry(array $values): bool
+    public function createEntry(array $attributes): bool
     {
-        return $this->qb->insert($values);
+        return $this->qb->insert($attributes);
     }
 
     /**
-     * Created database entry and returns model instance
+     * Updated database entry based on model attributes
+     */
+    public function update(): bool
+    {
+        $values = array_intersect_key($this->attributes, array_flip($this->updated));
+        return $this->qb->update($this->updatedFields, $values);
+    }
+
+
+    /**
+     * Creates database entry and returns model instance
      * @param array $attributes
      * 
-     * @return static|bool
+     * @return static
      */
-    public static function create(array $attributes): static|bool
+    public static function create(array $attributes): static
     {
-        $inst = new static();
-        $inst->newQuery();
-        $inst->attributes = $attributes;
-        if ($inst->createEntry($attributes)) return $inst;
-        return false;
+        $model = new static($attributes);
+
+        $model->save();
+
+        return $model;
+    }
+
+    public function save(): static
+    {
+        $this->createOrUpdate();
+        return $this;
+    }
+
+    public function createOrUpdate()
+    {
+        if (array_key_exists($this->primaryKey, $this->attributes)) {
+            // Update
+            $this->update();
+        } else {
+            // Create
+            $this->createEntry($this->attributes);
+        }
     }
 
     /**

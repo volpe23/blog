@@ -18,6 +18,7 @@ class Request
         return $this->body[$param] ?? null;
     }
 
+    // TODO: Refactor validation classes and this monstrosity
     public function validate(array $validations)
     {
         foreach ($validations as $attr => $validation) {

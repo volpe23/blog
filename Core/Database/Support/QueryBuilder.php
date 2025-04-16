@@ -201,6 +201,13 @@ class QueryBuilder
         return $this->connection->insert($sql, $values);
     }
 
+    public function update(array $columns, array $values): bool
+    {
+        $sql = $this->sqlBuilder->createUpdateQuery($this, $columns);
+
+        return $this->connection->insert($sql, $values);
+    }
+
     /**
      * Returns all the bindings in a single array
      * @return array

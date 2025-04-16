@@ -123,6 +123,13 @@ class SqlBuilder
         return "INSERT INTO {$builder->table} {$cols} VALUES {$vals}";
     }
 
+    public function createUpdateQuery(QueryBuilder $builder, array $columns): string
+    {
+        $sets = array_map(fn($col) => "$col = :$col", $columns);
+
+        return "UPDATE {$builder->table} SET $sets " . $this->compileWheres($builder, $builder->wheres);
+    }
+
     /**
      * Wraps the string with provided elems
      * @param string $str

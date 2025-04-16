@@ -26,6 +26,13 @@ class Database
         $this->container = $container;
     }
 
+    /**
+     * Inserts into db
+     * @param string $query
+     * @param array $attrs
+     * 
+     * @return bool
+     */
     public function insert(string $query, array $attrs): bool
     {
         $this->statement = $this->conn->prepare($query);
