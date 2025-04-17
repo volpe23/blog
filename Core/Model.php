@@ -25,7 +25,7 @@ abstract class Model
      * Tables id identifier
      * @var string
      */
-    protected string $primaryKey = "id";
+    public static string $primaryKey = "id";
 
     /**
      * Model attributes that are fetched from db
@@ -69,7 +69,6 @@ abstract class Model
             $this->fields = [...$this->timestamps];
         }
 
-        $this->fill($attributes);
     }
 
     public function __set(string $attr, $val)
@@ -215,11 +214,10 @@ abstract class Model
         // TODO: establishes relation
     }
 
-    public function with(string $relatedField, string $modelClass): Model
+    public function with(string $relatedField, $modelClass): Model
     {
         $fk = $this->attributes[$relatedField];
-        dd($this);
-        return $modelClass::where($relatedField, "=", $fk);
+        return $modelClass::where($modelClass::$primaryKey, "=", $fk)->first();
         // TODO: implement function that gets the related model
     }
 
@@ -237,9 +235,9 @@ abstract class Model
      * @param string $method
      * @param array $args
      * 
-     * @return static
+     * @return QueryBuilder
      */
-    public static function __callStatic(string $method, array $args): static
+    public static function __callStatic(string $method, array $args): QueryBuilder
     {
         return (new static)::query()->$method(...$args);
     }
