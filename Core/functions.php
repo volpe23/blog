@@ -1,40 +1,82 @@
 <?php
-// require base_path("routes.php");
 
-
-
+/**
+ * Returns path from project base path
+ * @param string $path
+ * 
+ * @return string
+ */
 function base_path(string $path): string
 {
     return str_replace("\\", "/", realpath(BASE_PATH . $path));
 }
 
-
-function route_to_controller(string $uri, array $routes): void
-{
-    if (array_key_exists($uri, $routes)) {
-        require base_path($routes[$uri]["controller"]);
-    }
-}
-
-function dd(mixed $value)
+/**
+ * Formated dump and die
+ * @param mixed $value
+ * @param mixed[] $args
+ */
+function dd(mixed $value, mixed ...$args)
 {
     echo "<pre>";
-    var_dump($value);
+    var_dump($value, $args);
     echo "</pre>";
     die();
 }
 
-function view(string $viewPath, $attributes = [])
+/**
+ * Returns a view with attributes
+ * @param string $viewPath
+ * @param array $attributes
+ * 
+ * @return void
+ */
+function view(string $viewPath, $attributes = []): void
 {
     extract($attributes);
     require base_path("views/" . $viewPath . ".view.php");
 }
 
-function redirect(string $url, $attributes = [])
+/**
+ * Redirects to a url
+ * @param string $url
+ * 
+ * @return void
+ */
+function redirect(string $url): void
 {
     extract($attributes);
     header("Location: $url");
     exit();
 }
 
-// route_to_controller($uri, $routes);
+/**
+ * Returns time diff from current time
+ * @param string $time
+ * 
+ * @return string
+ */
+function timestamp(string $time, ?string $from = null): string
+{
+    $now = $from ? strtotime($from) : time();
+    $timestamp = strtotime($time);
+
+    $timeDiff = $now - $timestamp;
+    // Time units in seconds
+    $units = [
+        "year" => 365 * 24 * 60 * 60,
+        "month" => 30 * 24 * 60 * 60,
+        "day" => 24 * 60 * 60,
+        "hour" => 60 * 60,
+        "minute" => 60,
+    ];
+
+    foreach ($units as $unit => $dur) {
+        $quotient = floor($timeDiff / $dur);
+        if ($quotient >= 1) {
+            return "{$quotient} $unit" . ($unit > 1 ? "s" : "") . " ago";
+        }
+    }
+
+    return "just now";
+}

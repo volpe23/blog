@@ -120,7 +120,7 @@ abstract class Model
      */
     public function createEntry(array $attributes): bool
     {
-        return $this->qb->insert($attributes);
+        return $this->newQuery()->insert($attributes);
     }
 
     /**
@@ -130,7 +130,7 @@ abstract class Model
     public function update(): bool
     {
         $values = array_intersect_key($this->attributes, array_flip($this->updated));
-        return $this->qb->update($this->updatedFields, $values);
+        return $this->newQuery()->update($this->updatedFields, $values);
     }
 
 
@@ -142,8 +142,9 @@ abstract class Model
      */
     public static function create(array $attributes): static
     {
-        $model = new static($attributes);
+        $model = new static();
 
+        $model->fill($attributes);
         $model->save();
 
         return $model;
@@ -230,10 +231,8 @@ abstract class Model
      */
     public function with($modelClass, string $foreignKey, ?string $relatedModelField = null): Model
     {
-        if (empty($relatedModelField)) $relatedModelField = $modelClass::$primaryKey;
         $fk = $this->attributes[$foreignKey];
-
-        return $modelClass::where($relatedModelField, "=", $fk)->first();
+        return $modelClass::where($relatedModelField ?? $modelClass::$primaryKey, "=", $fk)->first();
     }
 
     /**

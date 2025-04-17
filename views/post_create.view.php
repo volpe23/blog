@@ -10,8 +10,7 @@ use Core\Middleware\Csrf;
     </div>
     <div class="form-control">
         <label for="Text">Text</label>
-        <textarea name="text" id="text" class="form-input" placeholder="Text for post..." rows="5">
-        </textarea>
+        <textarea name="text" id="text" class="form-input" placeholder="Text for post..." rows="5"></textarea>
     </div>
     <div class="form-control">
         <input id="submit" type="submit" class="form-submit" value="Post">

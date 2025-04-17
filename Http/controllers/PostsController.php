@@ -30,7 +30,7 @@ class PostsController
         Post::create([
             "title" => $validated["title"],
             "text" => $validated["text"],
-            "user_id" => Auth::user()->id()
+            "user_id" => Auth::user()->id
         ]);
 
         return redirect("/posts");
