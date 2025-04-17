@@ -68,7 +68,6 @@ abstract class Model
         if (is_array($this->timestamps)) {
             $this->fields = [...$this->timestamps];
         }
-
     }
 
     public function __set(string $attr, $val)
@@ -126,6 +125,7 @@ abstract class Model
 
     /**
      * Updated database entry based on model attributes
+     * @return bool
      */
     public function update(): bool
     {
@@ -149,12 +149,19 @@ abstract class Model
         return $model;
     }
 
+    /**
+     * Saves the entry in database
+     * @return $this
+     */
     public function save(): static
     {
         $this->createOrUpdate();
         return $this;
     }
 
+    /**
+     * Determines wether the record should be inserted or updated
+     */
     public function createOrUpdate()
     {
         if (array_key_exists($this->primaryKey, $this->attributes)) {
@@ -214,11 +221,19 @@ abstract class Model
         // TODO: establishes relation
     }
 
-    public function with(string $relatedField, $modelClass): Model
+    /**
+     * Returns the model instance based on foreign key
+     * @param class-string<Model> $modelClass
+     * @param string $relatedField
+     * 
+     * @return Model
+     */
+    public function with($modelClass, string $foreignKey, ?string $relatedModelField = null): Model
     {
-        $fk = $this->attributes[$relatedField];
-        return $modelClass::where($modelClass::$primaryKey, "=", $fk)->first();
-        // TODO: implement function that gets the related model
+        if (empty($relatedModelField)) $relatedModelField = $modelClass::$primaryKey;
+        $fk = $this->attributes[$foreignKey];
+
+        return $modelClass::where($relatedModelField, "=", $fk)->first();
     }
 
     /**
