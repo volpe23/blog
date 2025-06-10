@@ -83,7 +83,7 @@ class Router
      * 
      * @return void
      */
-    public function route($uri, $method)
+    public function route(string $uri, string $method)
     {
         if (isset($this->routes[$method][$uri])) {
             $route = $this->routes[$method][$uri];

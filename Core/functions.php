@@ -1,5 +1,8 @@
 <?php
 
+use Core\Facades\App;
+use Core\Session;
+
 /**
  * Returns path from project base path
  * @param string $path
@@ -43,7 +46,7 @@ function view(string $viewPath, $attributes = []): void
  * 
  * @return void
  */
-function redirect(string $url): void
+function redirect(string $url, array $attributes = []): void
 {
     extract($attributes);
     header("Location: $url");
@@ -79,4 +82,9 @@ function timestamp(string $time, ?string $from = null): string
     }
 
     return "just now";
+}
+
+function session(): Session
+{
+    return App::get("session");
 }

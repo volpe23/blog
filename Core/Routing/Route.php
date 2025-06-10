@@ -8,8 +8,6 @@ use ReflectionMethod;
 class Route
 {
 
-    private static array $allowedMethods = ["GET", "POST"];
-    private static array $csrfMethods = ["POST", "PUT", "DELETE", "UPDATE"];
     private bool $csrf = false;
 
     /**

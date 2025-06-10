@@ -39,6 +39,13 @@ class Container implements ContainerInterface, ArrayAccess
         return isset($this->entries[$id]);
     }
 
+    /**
+     * Binds the service to the container 
+     * @param string $id
+     * @param callable $resolver
+     * 
+     * @return void
+     */
     public function bind(string $id, callable $resolver): void
     {
         $this->entries[$id] = $resolver;
