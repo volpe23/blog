@@ -39,11 +39,26 @@ class Route
     protected $container;
 
     /**
+     * Does Route have params
+     * @var boolean $hasParams
+     */
+    protected $hasParams = false;
+
+    /**
+     * Compiled route regex
+     * @var string $routeRegex
+     */
+    protected $routeRegex;
+
+    /**
      * @param array|callable $action
      * @param string $method
-     * @param Router $router
+     * @param array $params
      */
-    public function __construct(protected $action, protected $method) {}
+    public function __construct(protected $action, protected $method, protected array $params)
+    {
+        if (count($params) > 0) $this->hasParams = true;
+    }
 
     public function dispatch()
     {
@@ -70,6 +85,7 @@ class Route
         $methodReflection = new ReflectionMethod($controllerString, $method);
         $params = $methodReflection->getParameters();
 
+        dd($params);
         $dependencies = [];
         if ($params) {
             foreach ($params as $param) {
@@ -158,6 +174,58 @@ class Route
         $this->container = $container;
 
         return $this;
+    }
+
+    /**
+     * Sets values to params
+     * @param array $params
+     * 
+     * @return self
+     */
+    public function setParams(array $params): static
+    {
+        foreach ($params as $key => $value) {
+            if (isset($this->params[$key])) {
+                $this->params[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Routes uri path
+     * @param string $path
+     * 
+     * @return void
+     */
+    public function setRouteRegex(string $path): self
+    {
+        $this->routeRegex = $this->compileRoute($path);
+        return $this;
+    }
+
+    /**
+     * Get route regex
+     * 
+     * @return string
+     */
+    public function getRouteRegex(): string
+    {
+        return $this->routeRegex;
+    }
+
+    /**
+     * Compiles path string to a regex
+     * @param string $path
+     * 
+     * @return string
+     */
+    private function compileRoute(string $path): string
+    {
+        return '#^' . preg_replace_callback(Router::PREG_MATCH, function ($matches) {
+            return '(?P<' . $matches[1] . '>[^/]+)';
+        }, $path) . '$#';
     }
 
     /**

@@ -35,4 +35,11 @@ class PostsController
 
         return redirect("/posts");
     }
+
+    public function show(string $id)
+    {
+        return view("post_show", [
+            "post" => Post::where("id", $id)->get(),
+        ]);
+    }
 }

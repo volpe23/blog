@@ -217,11 +217,6 @@ abstract class Model
         }
     }
 
-    public function belongsTo(string $class)
-    {
-        // TODO: establishes relation
-    }
-
     /**
      * Returns the model instance based on foreign key
      * @param class-string<Model> $modelClass

@@ -4,7 +4,6 @@ namespace Core;
 
 use ArrayAccess;
 use Core\Exceptions\ContainerException;
-use Core\Exceptions\NotFoundException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionParameter;

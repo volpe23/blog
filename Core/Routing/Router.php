@@ -8,6 +8,8 @@ use Core\Container;
 class Router
 {
 
+    const PREG_MATCH = '/{(\w+)}/';
+
     /**
      * @var \Core\Container
      */
@@ -27,54 +29,76 @@ class Router
 
     /**
      * Add new route to the router
-     * @param string $uri
+     * @param string $path
      * @param string $method
      * @param callable|arary $action
      * 
      * @return Route
      */
-    private function add(string $uri, string $method, $action)
+    private function add(string $path, string $method, $action)
     {
-        return $this->routes[$method][$uri] = $this->newRoute($action, $method);
+        return $this->routes[$method][$path] = $this->newRoute($action, $method, $path);
     }
 
     /**
      * Registers a GET route in the application
      * 
-     * @param string $uri
+     * @param string $path
      * @param callable|array $action
      * 
      * @return Route
      */
-    public function get(string $uri, $action)
+    public function get(string $path, $action)
     {
-        return $this->add($uri, "GET", $action);
+        return $this->add($path, "GET", $action);
     }
 
     /**
      * Registers a POST route in the application
      * 
-     * @param string $uri
+     * @param string $path
      * @param callable|array $action
      * 
      * @return Route
      */
-    public function post(string $uri, $action)
+    public function post(string $path, $action)
     {
-        return $this->add($uri, "POST", $action);
+        return $this->add($path, "POST", $action);
     }
 
     /**
      * @param callable|array $action
      * @param string $method
+     * @param array $params
+     * @param string $path
      * 
      * @return Route
      */
-    private function newRoute($action, $method)
+    private function newRoute($action, $method, $path, array $params = [])
     {
-        return (new Route($action, $method))
+        return (new Route($action, $method, $params))
             ->setRouter($this)
-            ->setContainer($this->container);
+            ->setContainer($this->container)
+            ->setRouteRegex($path);
+    }
+
+
+    private function getRoute(string $uri, string $method): Route|false
+    {
+        foreach ($this->routes[$method] as $route) {
+            if (preg_match($route->getRouteRegex(), $uri, $matches)) {
+                $route->setParams($matches);
+                return $route;
+            }
+        }
+        return $route;
+    }
+
+
+    private function getRouteParamValues(string $uri): array
+    {
+
+        return [];
     }
 
     /**
@@ -85,14 +109,15 @@ class Router
      */
     public function route(string $uri, string $method)
     {
-        if (isset($this->routes[$method][$uri])) {
-            $route = $this->routes[$method][$uri];
-            $route->dispatch($method);
-        } else {
+        $route = $this->getRoute($uri, $method);
+        if (!$route) {
             view("404", [
                 "uri" => $uri,
                 "statusCode" => 404
             ]);
         }
+
+        $regex = $route->getRouteRegex();
+        preg_match($regex, $uri, $matches);
     }
 }

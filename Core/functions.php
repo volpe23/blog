@@ -88,3 +88,13 @@ function session(): Session
 {
     return App::get("session");
 }
+
+
+function array_find(array $array, callable $callback): mixed
+{
+    foreach ($array as $key => $value) {
+        if ($callback($value, $key)) return $value;
+    }
+
+    return false;
+}
