@@ -85,13 +85,15 @@ class Route
         $methodReflection = new ReflectionMethod($controllerString, $method);
         $params = $methodReflection->getParameters();
 
-        dd($params);
         $dependencies = [];
         if ($params) {
             foreach ($params as $param) {
                 $type = $param->getType();
-                if (!$type || $type->isBuiltin()) {
+                if (!$type) {
                     throw new Exception("controller parameter cannot be built in");
+                } else if ($type->isBuiltin()) {
+                    $dependencies[] = $this->params[$param->name];
+                    continue;
                 }
 
                 $dependencies[] = $this->resolveFromContainer($type);
@@ -184,13 +186,19 @@ class Route
      */
     public function setParams(array $params): static
     {
-        foreach ($params as $key => $value) {
-            if (isset($this->params[$key])) {
-                $this->params[$key] = $value;
-            }
-        }
+        $this->params = $params;
+        // foreach ($params as $key => $value) {
+        //     if (isset($this->params[$key])) {
+        //         $this->params[$key] = $value;
+        //     }
+        // }
 
         return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     /**
@@ -224,7 +232,8 @@ class Route
     private function compileRoute(string $path): string
     {
         return '#^' . preg_replace_callback(Router::PREG_MATCH, function ($matches) {
-            return '(?P<' . $matches[1] . '>[^/]+)';
+            $matched = $matches[1] ?? "";
+            return "(?P<" . $matched . ">[^/]+)";
         }, $path) . '$#';
     }
 

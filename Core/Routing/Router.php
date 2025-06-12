@@ -8,7 +8,7 @@ use Core\Container;
 class Router
 {
 
-    const PREG_MATCH = '/{(\w+)}/';
+    const PREG_MATCH = '/\{(\w+)\}/';
 
     /**
      * @var \Core\Container
@@ -87,7 +87,9 @@ class Router
     {
         foreach ($this->routes[$method] as $route) {
             if (preg_match($route->getRouteRegex(), $uri, $matches)) {
-                $route->setParams($matches);
+                $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                $route->setParams($params);
+
                 return $route;
             }
         }
@@ -102,6 +104,7 @@ class Router
     }
 
     /**
+     * Routes to the route matching provided URI
      * @param string $uri
      * @param string $method
      * 
@@ -117,7 +120,6 @@ class Router
             ]);
         }
 
-        $regex = $route->getRouteRegex();
-        preg_match($regex, $uri, $matches);
+        $route->dispatch();
     }
 }
