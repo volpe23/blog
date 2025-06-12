@@ -39,10 +39,10 @@ class Route
     protected $container;
 
     /**
-     * Does Route have params
-     * @var boolean $hasParams
+     * Route parameters if specified
+     * @var array<string, string>
      */
-    protected $hasParams = false;
+    protected array $params;
 
     /**
      * Compiled route regex
@@ -55,10 +55,7 @@ class Route
      * @param string $method
      * @param array $params
      */
-    public function __construct(protected $action, protected $method, protected array $params)
-    {
-        if (count($params) > 0) $this->hasParams = true;
-    }
+    public function __construct(protected $action, protected $method) {}
 
     public function dispatch()
     {
@@ -187,11 +184,6 @@ class Route
     public function setParams(array $params): static
     {
         $this->params = $params;
-        // foreach ($params as $key => $value) {
-        //     if (isset($this->params[$key])) {
-        //         $this->params[$key] = $value;
-        //     }
-        // }
 
         return $this;
     }

@@ -74,15 +74,21 @@ class Router
      * 
      * @return Route
      */
-    private function newRoute($action, $method, $path, array $params = [])
+    private function newRoute($action, $method, $path)
     {
-        return (new Route($action, $method, $params))
+        return (new Route($action, $method))
             ->setRouter($this)
             ->setContainer($this->container)
             ->setRouteRegex($path);
     }
 
-
+    /**
+     * Gets route that matches URI
+     * @param string $uri
+     * @param string $method
+     * 
+     * @return Route|false
+     */
     private function getRoute(string $uri, string $method): Route|false
     {
         foreach ($this->routes[$method] as $route) {
@@ -94,13 +100,6 @@ class Router
             }
         }
         return $route;
-    }
-
-
-    private function getRouteParamValues(string $uri): array
-    {
-
-        return [];
     }
 
     /**
