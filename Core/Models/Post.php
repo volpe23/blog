@@ -6,7 +6,6 @@ use Core\Model;
 
 class Post extends Model
 {
-
     /**
      * Returns the related user model instance
      * @return User

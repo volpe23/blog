@@ -39,7 +39,7 @@ class PostsController
     public function show(string $id)
     {
         return view("post_show", [
-            "post" => Post::where("id", $id)->get(),
+            "post" => Post::where("id", $id)->first(),
         ]);
     }
 }

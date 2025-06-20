@@ -77,6 +77,8 @@ class QueryBuilder
                 [$column, $operator, $value] = $col;
                 $this->addWhere($column, $operator, $value);
             }
+        } else if ($value === null) {
+            $this->addWhere($column, "=", $operator);
         } else {
             $this->addWhere($column, $operator, $value);
         }
@@ -185,7 +187,9 @@ class QueryBuilder
      */
     public function first(array $columns = ["*"]): Model
     {
-        return $this->connection->query($this->sqlBuilder->createSelectQuery($this, $columns), $this->getFlatBindings())->fetchClass($this->model::class);
+        $sql = $this->sqlBuilder->createSelectQuery($this, $columns);
+
+        return $this->connection->query($sql, $this->getFlatBindings())->fetchClass($this->model::class);
     }
 
     /**
