@@ -214,7 +214,8 @@ class QueryBuilder
     public function get(array $columns = ["*"]): array
     {
         $this->setSelectSqlQuery($columns);
-        return $this->setConnectionQuery()->fetchAllClass($this->model::class);
+        $attrs = $this->setConnectionQuery()->fetchAll();
+        return array_map(fn($data) => $this->model->newFromBuilder($data), $attrs);
     }
 
     /**
@@ -226,8 +227,9 @@ class QueryBuilder
     public function first(array $columns = ["*"]): Model
     {
         $this->setSelectSqlQuery($columns);
+        $attrs = $this->setConnectionQuery()->fetch();
 
-        return $this->setConnectionQuery()->fetch($this->model::class);
+        return $this->model->newFromBuilder($attrs);
     }
 
     /**

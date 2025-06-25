@@ -1,3 +1,4 @@
 <div>
-    <?= $post->title?>
+    <p> <?= $post->title ?></p>
+    <?= auth()->user()->username ?>
 </div>

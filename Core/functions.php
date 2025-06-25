@@ -1,5 +1,6 @@
 <?php
 
+use Core\Auth;
 use Core\Facades\App;
 use Core\Session;
 
@@ -97,4 +98,9 @@ function array_find(array $array, callable $callback): mixed
     }
 
     return false;
+}
+
+function auth(): Auth
+{
+    return App::get("auth");
 }

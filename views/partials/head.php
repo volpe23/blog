@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My Blog</title>
-    <link rel="stylesheet" href="./output.css">
+    <link rel="stylesheet" href="/output.css">
 </head>
 
 <body>
@@ -15,9 +15,6 @@
             <div class="flex justify-between items-center container mx-auto">
                 <ul class="flex gap-6">
                     <?php
-
-                    use Core\Facades\Auth;
-
                     foreach ($navRoutes as $route => $options) {
                         if ($options["restriction"]): ?>
                             <li><a class="py-2 rounded font-medium text-red-900 
@@ -28,9 +25,9 @@
                     <?php endif;
                     } ?>
                 </ul>
-                <?php if (Auth::check()): ?>
+                <?php if (auth()->check()): ?>
                     <div class="flex gap-6 items-center">
-                        <span><?= Auth::user()?->username ?></span>
+                        <span><?= auth()->user()?->username ?></span>
                         <form action="/logout" method="POST">
                             <input class="py-2 rounded font-medium text-red-900 hover:text-red-700 hover:underline hover:cursor-pointer" type="submit" value="Logout">
                         </form>
