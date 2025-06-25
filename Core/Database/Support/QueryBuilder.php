@@ -38,7 +38,16 @@ class QueryBuilder
      */
     public bool $distinct = false;
 
+    /**
+     * SqlBuilder instance
+     * @var SqlBuilder
+     */
     protected $sqlBuilder;
+
+    /**
+     * Compiled SQL query
+     */
+    protected $sql;
 
     /**
      * @var Model $model
@@ -169,14 +178,43 @@ class QueryBuilder
     }
 
     /**
+     * Sets SQL query
+     * @return self
+     */
+    protected function setSqlQuery(string $query): self
+    {
+        $this->sql = $query;
+        return $this;
+    }
+
+    /**
+     * Sets instances sql query to a SELECT query
+     * @param array<string> $columns
+     * 
+     * @return self
+     */
+    protected function setSelectSqlQuery(array $columns): self
+    {
+        return $this->setSqlQuery($this->sqlBuilder->createSelectQuery($this, $columns));
+    }
+
+    /**
+     * Queries the database with current SQL query
+     * 
+     * @return Database
+     */
+    public function setConnectionQuery(): Database
+    {
+        return $this->connection->query($this->sql, $this->getFlatBindings());
+    }
+    /**
      * Returns all the results from db based on built query
      * @return array
      */
     public function get(array $columns = ["*"]): array
     {
-        $sql = $this->sqlBuilder->createSelectQuery($this, $columns);
-
-        return $this->connection->query($sql, $this->getFlatBindings())->fetchAllClass($this->model::class);
+        $this->setSelectSqlQuery($columns);
+        return $this->setConnectionQuery()->fetchAllClass($this->model::class);
     }
 
     /**
@@ -187,9 +225,9 @@ class QueryBuilder
      */
     public function first(array $columns = ["*"]): Model
     {
-        $sql = $this->sqlBuilder->createSelectQuery($this, $columns);
+        $this->setSelectSqlQuery($columns);
 
-        return $this->connection->query($sql, $this->getFlatBindings())->fetchClass($this->model::class);
+        return $this->setConnectionQuery()->fetch($this->model::class);
     }
 
     /**

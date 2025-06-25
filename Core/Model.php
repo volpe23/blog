@@ -240,6 +240,17 @@ abstract class Model
     }
 
     /**
+     * Returns new model instance from provided attributes
+     * @param array<TKey, TValue> $attributes
+     * 
+     * @return Model
+     */
+    public function newFromBuilder(array $attributes): Model
+    {
+        return (new static())->fill($attributes);
+    }
+
+    /**
      * When calling a query method on model return a new instance and querybuilder
      * @param string $method
      * @param array $args
