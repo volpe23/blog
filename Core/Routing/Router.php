@@ -82,6 +82,11 @@ class Router
             ->setRouteRegex($path);
     }
 
+    public function group(callable $callback)
+    {
+
+    }
+
     /**
      * Gets route that matches URI
      * @param string $uri
