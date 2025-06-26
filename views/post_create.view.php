@@ -2,7 +2,7 @@
 
 use Core\Middleware\Csrf;
 ?>
-<form method="POST" action="/posts_create">
+<form method="POST" action="/posts/create">
     <?= Csrf::csrfInputField() ?>
     <div class="form-control">
         <label for="title">Title</label>
