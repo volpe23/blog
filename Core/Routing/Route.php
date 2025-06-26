@@ -53,9 +53,12 @@ class Route
     /**
      * @param array|callable $action
      * @param string $method
-     * @param array $params
+     * @param string $path
      */
-    public function __construct(protected $action, protected $method) {}
+    public function __construct(protected $action, protected $method, protected $path)
+    {
+        $this->setRouteRegex();
+    }
 
     public function dispatch()
     {
@@ -132,6 +135,20 @@ class Route
     }
 
     /**
+     * Adds prefix to route
+     * @param string $value
+     * 
+     * @return self
+     */
+    public function prefix(string $value): self
+    {
+        $this->path = $value . $this->path;
+        $this->setRouteRegex($this->path);
+
+        return $this;
+    }
+
+    /**
      * @param string $middleware
      * 
      * @return $this
@@ -188,20 +205,33 @@ class Route
         return $this;
     }
 
+    /**
+     * Returns route's params
+     * @return array
+     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
+     * Returns route's path
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
      * Routes uri path
-     * @param string $path
      * 
      * @return void
      */
-    public function setRouteRegex(string $path): self
+    public function setRouteRegex(): self
     {
-        $this->routeRegex = $this->compileRoute($path);
+        $this->routeRegex = $this->compileRoute($this->path);
+
         return $this;
     }
 

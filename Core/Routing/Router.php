@@ -2,8 +2,9 @@
 
 namespace Core\Routing;
 
+use Closure;
 use Core\Container;
-
+use Core\Support\Arr;
 
 class Router
 {
@@ -11,16 +12,25 @@ class Router
     const PREG_MATCH = '/\{(\w+)\}/';
 
     /**
+     * App container instance
      * @var \Core\Container
      */
     protected $container;
+
     /**
+     * Registered routes
      * @var array<string, array<string, Route>>
      */
     private array $routes = [
         "GET" => [],
         "POST" => []
     ];
+
+    /**
+     * Registered group stack functions
+     * @var array<string, mixed> $groupStack
+     */
+    private array $groupStack = [];
 
     public function __construct(Container $container)
     {
@@ -37,7 +47,14 @@ class Router
      */
     private function add(string $path, string $method, $action)
     {
-        return $this->routes[$method][$path] = $this->newRoute($action, $method, $path);
+        $route = $this->newRoute($action, $method, $path);
+        if ($this->hasGroupStack()) {
+            foreach ($this->groupStack as $method => $value) {
+                $route->{$method}($value);
+            }
+        }
+
+        return $this->routes[$method][$route->getPath()] = $route;
     }
 
     /**
@@ -76,15 +93,46 @@ class Router
      */
     private function newRoute($action, $method, $path)
     {
-        return (new Route($action, $method))
+        return (new Route($action, $method, $path))
             ->setRouter($this)
-            ->setContainer($this->container)
-            ->setRouteRegex($path);
+            ->setContainer($this->container);
     }
 
-    public function group(callable $callback)
+    private function addToStack(string $key, $attribute): self
     {
+        $this->groupStack[$key] = $attribute;
+        return $this;
+    }
 
+    private function updateGroupStack(array $attributes): void
+    {
+        $this->groupStack[] = $attributes;
+    }
+
+    /**
+     * Checks wether there are attributes in group stack
+     * @return bool
+     */
+    private function hasGroupStack(): bool
+    {
+        return !empty($this->groupStack);
+    }
+
+    public function group(array $attributes, callable $routes): self
+    {
+        foreach (Arr::wrap($routes) as $groupRoutes) {
+            $this->updateGroupStack($attributes);
+            $this->loadRoutes($groupRoutes);
+
+            array_pop($this->groupStack);
+        }
+
+        return $this;
+    }
+
+    private function loadRoutes(Closure $routes): void
+    {
+        call_user_func($routes, $this);
     }
 
     /**
@@ -125,5 +173,10 @@ class Router
         }
 
         $route->dispatch();
+    }
+
+    public function __call(string $method, array $arguments): Registrar
+    {
+        return (new Registrar($this))->attribute($method, array_key_exists(0, $arguments) ? $arguments[0] : true);
     }
 }
