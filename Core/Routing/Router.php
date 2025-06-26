@@ -137,9 +137,9 @@ class Router
      * 
      * @return string
      */
-    public function getNamedRoutePath(string $name, ?string $param): string
+    public function getNamedRoutePath(string $name, array $params = [])
     {
-        return $this->getNamedRoute($name)->getPath();
+        return $this->getNamedRoute($name)->getPath($params);
     }
 
     /**

@@ -254,9 +254,13 @@ class Route
      * Returns route's path
      * @return string
      */
-    public function getPath(): string
+    public function getPath(array $params = []): string
     {
-        return $this->path;
+        $path = $this->path;
+        foreach($params as $param => $value) {
+            $path = str_replace("{{$param}}", $value, $path);
+        }
+        return $path;
     }
 
     /**
