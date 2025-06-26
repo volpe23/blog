@@ -88,7 +88,7 @@ class Router
      * 
      * @return Route
      */
-    public function post(string $path, $action)
+    public function post(string $path, $action): Route
     {
         return $this->add($path, "POST", $action);
     }
@@ -101,13 +101,20 @@ class Router
      * 
      * @return Route
      */
-    private function newRoute($action, $method, $path)
+    private function newRoute($action, $method, $path): Route
     {
         return (new Route($action, $method, $path))
             ->setRouter($this)
             ->setContainer($this->container);
     }
 
+    /**
+     * Register a route by it's name
+     * @param string $name
+     * @param Route $route
+     * 
+     * @return self
+     */
     public function registerNamedRoute(string $name, Route $route): self
     {
         $this->namedRoutes[$name] = $route;
@@ -137,7 +144,7 @@ class Router
      * 
      * @return string
      */
-    public function getNamedRoutePath(string $name, array $params = [])
+    public function getNamedRoutePath(string $name, array $params = []): string
     {
         return $this->getNamedRoute($name)->getPath($params);
     }

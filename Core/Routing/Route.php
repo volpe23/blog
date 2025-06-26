@@ -184,7 +184,13 @@ class Route
         return $this;
     }
 
-    public function setRouter(Router $router): static
+    /**
+     * Binds a router instance to route
+     * @param Router $router
+     * 
+     * @return self
+     */
+    public function setRouter(Router $router): self
     {
         $this->router = $router;
 
@@ -197,7 +203,7 @@ class Route
      * 
      * @return self
      */
-    public function setContainer($container)
+    public function setContainer($container): self
     {
         $this->container = $container;
 
@@ -210,7 +216,7 @@ class Route
      * 
      * @return self
      */
-    public function setParams(array $params): static
+    public function setParams(array $params): self
     {
         $this->params = $params;
 
