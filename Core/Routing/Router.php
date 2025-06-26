@@ -226,7 +226,7 @@ class Router
      * 
      * @return void
      */
-    public function route(string $uri, string $method)
+    public function route(string $uri, string $method): void
     {
         $route = $this->getRoute($uri, $method);
         if (!$route) {

@@ -62,7 +62,11 @@ class Route
         $this->setPath($path);
     }
 
-    public function dispatch()
+    /**
+     * Dispatches route
+     * @return void
+     */
+    public function dispatch(): void
     {
         $this->executeMiddlewares();
         $this->resolveAction();
@@ -70,16 +74,22 @@ class Route
         call_user_func($this->resolvedAction);
     }
 
-    public function resolveAction()
+    /**
+     * Resolves and sets route action
+     * @return void
+     */
+    public function resolveAction(): void
     {
         if (is_callable($this->action)) $this->resolvedAction = $this->action;
         else if (is_array($this->action)) $this->resolvedAction = $this->resolveControlerAction();
     }
 
     /**
+     * Resolves the action if is not callable
+     * Uses App Container
      * @return callable
      */
-    protected function resolveControlerAction()
+    protected function resolveControlerAction(): callable
     {
         if (count($this->action) !== 2) throw new Exception("Incorrect controller action provided");
         [$controllerString, $method] = $this->action;
