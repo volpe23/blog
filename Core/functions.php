@@ -104,3 +104,8 @@ function auth(): Auth
 {
     return App::get("auth");
 }
+
+function route(string $name, ?string $param = null): string
+{
+    return App::get("router")->getNamedRoutePath($name, $param);
+}

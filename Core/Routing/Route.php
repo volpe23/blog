@@ -171,6 +171,19 @@ class Route
         }
     }
 
+    /**
+     * Names a route
+     * @param string $routeName
+     * 
+     * @return self
+     */
+    public function name(string $routeName): self
+    {
+        $this->router->registerNamedRoute($routeName, $this);
+
+        return $this;
+    }
+
     public function setRouter(Router $router): static
     {
         $this->router = $router;
@@ -222,7 +235,7 @@ class Route
     public function setPath(string $path): self
     {
         $this->path = $this->trimPath($path);
-        
+
         return $this->setRouteRegex();
     }
 

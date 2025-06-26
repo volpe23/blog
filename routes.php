@@ -44,10 +44,10 @@ Route::middleware("guest")->group(function () {
 Route::post("/logout", [UserController::class, "logout"])->csrfExempt(true);
 
 Route::prefix("/posts")->group(function () {
-    Route::get("/", [PostsController::class, "index"]);
+    Route::get("/", [PostsController::class, "index"])->name("posts.index");
 
     Route::middleware("auth")->group(function () {
-        Route::post("/create", [PostsController::class, "store"]);
-        Route::get("/{id}", [PostsController::class, "show"]);
+        Route::post("/create", [PostsController::class, "store"])->name("posts.create");
+        Route::get("/{id}", [PostsController::class, "show"])->name("posts.show");
     });
 });

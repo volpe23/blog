@@ -4,6 +4,7 @@ namespace Core\Routing;
 
 use Closure;
 use Core\Container;
+use Core\Exceptions\NotFoundException;
 use Core\Support\Arr;
 
 class Router
@@ -25,6 +26,12 @@ class Router
         "GET" => [],
         "POST" => []
     ];
+
+    /**
+     * Named route aliases
+     * @var array<string, Route>
+     */
+    private array $namedRoutes = [];
 
     /**
      * Registered group stack functions
@@ -101,6 +108,46 @@ class Router
             ->setContainer($this->container);
     }
 
+    public function registerNamedRoute(string $name, Route $route): self
+    {
+        $this->namedRoutes[$name] = $route;
+
+        return $this;
+    }
+
+    /**
+     * Returns Route instance by name
+     * @param string $name
+     * 
+     * @return Route
+     * 
+     * @throws \NotFoundException
+     */
+    private function getNamedRoute(string $name): Route
+    {
+        if (!array_key_exists($name, $this->namedRoutes)) {
+            throw new NotFoundException("Route with name {$name} does not exist");
+        }
+        return $this->namedRoutes[$name];
+    }
+
+    /**
+     * Gets path from named Route
+     * @param string $name
+     * 
+     * @return string
+     */
+    public function getNamedRoutePath(string $name, ?string $param): string
+    {
+        return $this->getNamedRoute($name)->getPath();
+    }
+
+    /**
+     * Adds an attribute to group stack
+     * @param array<string, mixed> $attributes
+     * 
+     * @return void
+     */
     private function updateGroupStack(array $attributes): void
     {
         $this->groupStack[] = $attributes;
@@ -115,7 +162,14 @@ class Router
         return !empty($this->groupStack);
     }
 
-    public function group(array $attributes, callable $routes): self
+    /**
+     * Groups attributes to attach them to multiple routes
+     * @param array $attributes
+     * @param Closure $routes
+     * 
+     * @return self
+     */
+    public function group(array $attributes, Closure $routes): self
     {
         foreach (Arr::wrap($routes) as $groupRoutes) {
             $this->updateGroupStack($attributes);
@@ -127,6 +181,12 @@ class Router
         return $this;
     }
 
+    /**
+     * Calls the passed in callback in route group
+     * @param Closure $routes
+     * 
+     * @return void
+     */
     private function loadRoutes(Closure $routes): void
     {
         call_user_func($routes, $this);
