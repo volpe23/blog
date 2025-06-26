@@ -13,7 +13,7 @@ require BASE_PATH . "routes.php";
 require BASE_PATH . "/views/partials/head.php";
 
 
-$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
+$uri = rtrim(parse_url($_SERVER["REQUEST_URI"])["path"], "/");
 $method = $_SERVER["REQUEST_METHOD"];
 
 Route::route($uri, $method);

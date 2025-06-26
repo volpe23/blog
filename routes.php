@@ -38,7 +38,11 @@ Route::post("/logout", [UserController::class, "logout"])->csrfExempt(true);
 Route::get("/user", fn() => view("user"))->middleware("auth");
 
 // Routes for posts
-Route::get("/posts", [PostsController::class, "index"]);
-// Route::get("/posts_create", [PostsController::class, "create"])->middleware("auth");
-Route::post("/posts_create", [PostsController::class, "store"])->middleware("auth");
-Route::get("/posts/{id}", [PostsController::class, "show"])->middleware("auth");
+// Route::get("/posts", [PostsController::class, "index"]);
+// Route::post("/posts_create", [PostsController::class, "store"])->middleware("auth");
+// Route::get("/posts/{id}", [PostsController::class, "show"])->middleware("auth");
+Route::prefix("/posts")->group(function () {
+    Route::get("/", [PostsController::class, "index"]);
+    Route::post("/create", [PostsController::class, "store"])->middleware("auth");
+    Route::get("/{id}", [PostsController::class, "show"])->middleware("auth");
+});

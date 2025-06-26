@@ -28,7 +28,7 @@ class Router
 
     /**
      * Registered group stack functions
-     * @var array<string, mixed> $groupStack
+     * @var array<array<string, mixed>> $groupStack
      */
     private array $groupStack = [];
 
@@ -48,9 +48,12 @@ class Router
     private function add(string $path, string $method, $action)
     {
         $route = $this->newRoute($action, $method, $path);
+
         if ($this->hasGroupStack()) {
-            foreach ($this->groupStack as $method => $value) {
-                $route->{$method}($value);
+            foreach ($this->groupStack as $stack) {
+                foreach ($stack as $groupMethod => $value) {
+                    $route->{$groupMethod}($value);
+                }
             }
         }
 
@@ -96,12 +99,6 @@ class Router
         return (new Route($action, $method, $path))
             ->setRouter($this)
             ->setContainer($this->container);
-    }
-
-    private function addToStack(string $key, $attribute): self
-    {
-        $this->groupStack[$key] = $attribute;
-        return $this;
     }
 
     private function updateGroupStack(array $attributes): void

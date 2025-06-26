@@ -40,7 +40,13 @@ class Registrar
         return $this;
     }
 
-    private function group(Closure $callaback): self
+    /**
+     * Calls the group on router
+     * @param Closure $callback
+     * 
+     * @return self
+     */
+    public function group(Closure $callaback): self
     {
         $this->router->group($this->attributes, $callaback);
 

@@ -50,14 +50,16 @@ class Route
      */
     protected $routeRegex;
 
+    protected string $path;
+
     /**
      * @param array|callable $action
      * @param string $method
      * @param string $path
      */
-    public function __construct(protected $action, protected $method, protected $path)
+    public function __construct(protected $action, protected $method, string $path)
     {
-        $this->setRouteRegex();
+        $this->setPath($path);
     }
 
     public function dispatch()
@@ -142,10 +144,7 @@ class Route
      */
     public function prefix(string $value): self
     {
-        $this->path = $value . $this->path;
-        $this->setRouteRegex($this->path);
-
-        return $this;
+        return $this->setPath($value . $this->path);
     }
 
     /**
@@ -215,6 +214,30 @@ class Route
     }
 
     /**
+     * Sets route's path
+     * @param string $path
+     * 
+     * @return self
+     */
+    public function setPath(string $path): self
+    {
+        $this->path = $this->trimPath($path);
+        
+        return $this->setRouteRegex();
+    }
+
+    /**
+     * Trims slashes from path's end
+     * @param string $path
+     * 
+     * @return string
+     */
+    private function trimPath(string $path): string
+    {
+        return rtrim($path, "/");
+    }
+
+    /**
      * Returns route's path
      * @return string
      */
@@ -226,7 +249,7 @@ class Route
     /**
      * Routes uri path
      * 
-     * @return void
+     * @return self
      */
     public function setRouteRegex(): self
     {
